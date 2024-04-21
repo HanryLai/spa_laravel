@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table-> string('id',100)->primary()->unique();
+            $table-> string('status_order',16);
+            $table-> timestamp('booking_date');
+            $table-> string('user_id',100);
+            $table-> string('voucher_id')->nullable(); 
+            $table-> timestamps();
         });
     }
 
