@@ -15,9 +15,9 @@ return new class extends Migration
             $table->string('id',100)->primary()->unique();
             $table->string('name',50);
             $table->longText('content');
-            $table->double('money_discount');
-            $table->unsignedInteger('percent_discount');
-            $table->unsignedInteger('quantity');
+            $table->double('money_discount')->nullable();
+            $table->unsignedInteger('percent_discount')->nullable();
+            $table->unsignedInteger('quantity')->nullable();
             $table->timestamp('start_date');
             $table->timestamp('end_date');
             $table->timestamps();
