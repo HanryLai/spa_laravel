@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('staff', function (Blueprint $table) {
             $table->string('id',100)->primary()->unique();
-            $table-> string('user_id',100);
+            $table-> string('user_id',100)->unique();
             $table-> integer('accumulated_point')->nullable();
             $table->timestamps();
         });

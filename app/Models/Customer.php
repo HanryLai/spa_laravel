@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Customer extends Model
 {
     use HasFactory;
-    public function User(){
-        // return $this->hasOne(Customer::class);
+    public function Customer(){
+        // return $this-> belongsTo(User::class);
     }
 }
