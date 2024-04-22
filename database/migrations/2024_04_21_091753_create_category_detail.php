@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('category_detail', function (Blueprint $table) {
-            $table->string('category_id',100)->primary();
-            $table->string('product_id',100)->primary();
-            $table->string('combo_product_id',100)->primary();
+            $table->string('category_id',100);
+            $table->string('product_id',100);
+            $table->string('combo_product_id',100);
             $table->timestamps();
 
         });

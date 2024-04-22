@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('combo_product_detail', function (Blueprint $table) {
-            $table->string('product_id',100)->primary();
-            $table->string('combo_product_id',100)->primary();
+            $table->string('product_id',100);
+            $table->string('combo_product_id',100);
             $table->unsignedInteger('quantity');
             $table->timestamps();
         });
