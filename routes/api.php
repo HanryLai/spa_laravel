@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('customer')->group(function(){
+    Route::get('get',function(){
+        return "Hello World";
+    });
 });

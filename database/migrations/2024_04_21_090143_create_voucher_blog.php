@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('voucher_blog', function (Blueprint $table) {
-            $table->string('id',100)->primary()->unique();
             $table->string('voucher_id',100);
             $table->string('blog_id',100);
             $table->timestamps();

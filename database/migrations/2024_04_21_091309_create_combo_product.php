@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('combo_product', function (Blueprint $table) {
-            $table->string('id',100)->primary()->unique();
+            $table->uuid('id')->primary()->unique();
             $table->string('name',50);
             $table->longText('description');
             $table->double('price');

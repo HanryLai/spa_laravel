@@ -8,7 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     use HasFactory;
-    public function User(){
-        // return $this->hasOne(Customer::class);
-    }
+    protected $table = "user";
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    protected $fillable = [
+        'username','email','phone','role','login_at'
+    ];
+    protected $date = [
+        'created_at','updated_at','login_at'
+    ];
+    
+
 }

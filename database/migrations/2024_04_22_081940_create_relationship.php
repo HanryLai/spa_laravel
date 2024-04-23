@@ -70,19 +70,24 @@ return new class extends Migration
         });
 
         Schema::table('voucher_blog', function (Blueprint $table) {
-             $table->dropForeign(['blog_id','voucher_id']);
+             $table->dropForeign(['blog_id']);
+             $table->dropForeign(['voucher_id']);
         });
 
         Schema::table('order_detail', function (Blueprint $table) {
-             $table->dropForeign(['order_id','product_id','combo_product_id']);
+            $table->dropForeign(['order_id']);
+            $table->dropForeign(['product_id']);
+            $table->dropForeign(['combo_product_id']);
         });
 
-        Schema::table('voucher_blog', function (Blueprint $table) {
-             $table->dropForeign(['product_id','combo_product_id']);
+        Schema::table('combo_product_detail', function (Blueprint $table) {
+             $table->dropForeign(['product_id']);
+             $table->dropForeign(['combo_product_id']);
         });
 
-        Schema::table('voucher_blog', function (Blueprint $table) {
-             $table->dropForeign(['category_id','product_id']);
+        Schema::table('category_detail', function (Blueprint $table) {
+             $table->dropForeign(['category_id']);
+             $table->dropForeign(['product_id']);
         });
     }
 };
