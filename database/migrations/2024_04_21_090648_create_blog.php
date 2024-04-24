@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('blog', function (Blueprint $table) {
            $table->uuid('id')->primary();
            $table->string('title',100);
+            $table->string('url_img',100);
            $table->longText('content');
            $table->timestamps();
         });

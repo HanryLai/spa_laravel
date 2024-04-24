@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     use HasUlids;
+    protected $table = "customer";
     protected $primaryKey = "id";
     protected $keyType = "string";
-    public $incrementing = "false";
+    public $incrementing = false;
     protected $fillable = [
         "user_id",'accumulated_point'
     ];

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name',50);
             $table->longText('content');
+            $table->string('url_img',100);
             $table->double('money_discount')->nullable();
             $table->unsignedInteger('percent_discount')->nullable();
             $table->unsignedInteger('quantity')->nullable();

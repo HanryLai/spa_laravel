@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('combo_product', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('name',50);
+            $table->string('url_img',100);
             $table->longText('description');
             $table->double('price');
             $table->timestamps();
