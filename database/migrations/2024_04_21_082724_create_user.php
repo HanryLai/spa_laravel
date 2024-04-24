@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('email',15)->unique();
             $table->string('phone',15)->unique();
             $table->string('role',8);
-            $table->timestamp('login_at');
+            $table->timestamp('login_at')->nullable();
             $table->timestamps();
         });
 
-        User::setTable('user');
+        
     }
 
     /**
