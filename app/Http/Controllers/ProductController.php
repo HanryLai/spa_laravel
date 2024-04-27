@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
 use function League\Flysystem\InMemory\time;
@@ -36,14 +37,30 @@ class ProductController extends Controller
     public function update_product(Request $request,String $id_product){
         $product = Product::find($id_product);
         if(!$product) return response()->json(["message"=>"not found this product"],404);
+        $data = $request->all();
         if($request->hasFile('image')){
+            $fileName = basename($product->url_img);
+            if(Storage::exists("public/product_img/".$fileName)){
+                echo("Co ton tai path");
+                Storage::delete("public/product_img/".$fileName);
+            }else echo ("khong ton tai img");
+            $path = $data['image']->store('product_img','public');
+            $path_access = asset('storage/'.$path);
+            $product->url_img = $path_access;
         }
-        $fileName = basename($product->url_img);
-        Storage::delete("storage/".$fileName);
         
-        // $fileName = basename($product->url_img);
-        // Storage::delete($product->image);
+        try {
+            
+            $product->name = $data['name'];
+            $product->description = $data['description'];
+            $product->price = $data['price'];
 
-        return $fileName;
+            echo($product->name);
+            dd($product);
+            Product::updated($product);
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
