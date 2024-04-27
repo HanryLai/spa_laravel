@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Error;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
-
+use phpDocumentor\Reflection\Types\Boolean;
 
 class ProductController extends Controller
 {
@@ -86,6 +87,19 @@ class ProductController extends Controller
     }
 
     public function deleteProductById(String $id_product){
-
+        try {
+            // find product
+            $product = Product::find($id_product);
+            if(!$product) throw new Error( "Not found product this product",404);
+            //get name img product
+            $img_access = basename($product->url_img);
+            Storage::delete("public/product_img/".$img_access);
+            // check exist or not to confirm image product was deleted 
+            if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
+            $product->delete();
+            return response()->json(["message"=>"delete successfully"],200);
+        } catch (\Throwable $th) {
+             return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
+        } 
     }
 }

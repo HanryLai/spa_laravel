@@ -44,6 +44,9 @@ Route::prefix('product')->group(function(){
 
     //update information product
     Route::post('{id}',[ProductController::class,"update_product"]);
+
+    //delete product by id
+    Route::delete("{id}",[ProductController::class,"deleteProductById"]);   
 });
 
 Route::post("file",function(Request $request){

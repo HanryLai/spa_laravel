@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\User;
 use ArrayObject;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -46,7 +47,13 @@ class UserController extends Controller
      */
     public function getById(String $id)
     {
-        return $user = User::find($id);
+        try {
+            $user = User::find($id);
+            if(!$user) throw new Error("User not found",404);
+            return response()->json(["data"=>$user],200);
+        } catch (\Throwable $th) {
+            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+        }
         
     }
 
@@ -65,6 +72,6 @@ class UserController extends Controller
         $user_current->update($body);
         return $user_current;
     }
-
+    
     
 }
