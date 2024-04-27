@@ -32,11 +32,18 @@ Route::prefix('customer')->group(function(){
 });
 
 Route::prefix('product')->group(function(){
+    //find by id
+    Route::get('{id}', [ProductController::class,'findProductById']);
+
+    //find all
+    Route::get('', [ProductController::class,'getAll']);
+
+
     // create new product
     Route::post('',[ProductController::class,'create_product']);
 
     //update information product
-    Route::patch('{id}',[ProductController::class,"update_product"]);
+    Route::post('{id}',[ProductController::class,"update_product"]);
 });
 
 Route::post("file",function(Request $request){

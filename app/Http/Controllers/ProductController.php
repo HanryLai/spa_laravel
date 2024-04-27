@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
-use function League\Flysystem\InMemory\time;
 
 class ProductController extends Controller
 {
@@ -28,39 +28,64 @@ class ProductController extends Controller
             $product->save();
             return response()->json($product,200);
         } catch (\Throwable $th) {
-            echo($th);
-            return response()->json($th,500);
+            return response()->json(["error"=>$th->getMessage()],500);
         }
 
+    }
+
+    public function findProductById(String $id_product){
+        try {
+            $product = Product::find($id_product);
+            if($product) return response()->json(["message"=>"product by id ".$id_product,"data"=>$product],200);
+            else throw new Error("Not found this product");
+        } catch (\Throwable $th) {
+           return response()->json(["error"=>"product by id ".$id_product,"data"=>$th->getMessage()],500);
+        }
+    }
+
+    public function getAll(){
+        try {
+            $product = Product::all();
+            if($product) return response()->json(["message"=>"product by id ","data"=>$product],200);
+            else throw new Error("Not found this product");
+        } catch (\Throwable $th) {
+           return response()->json(["error"=>"product by id ","data"=>$th->getMessage()],500);
+        }
     }
 
     public function update_product(Request $request,String $id_product){
         $product = Product::find($id_product);
         if(!$product) return response()->json(["message"=>"not found this product"],404);
         $data = $request->all();
+        $path_access = $data['image'];
         if($request->hasFile('image')){
             $fileName = basename($product->url_img);
             if(Storage::exists("public/product_img/".$fileName)){
                 echo("Co ton tai path");
                 Storage::delete("public/product_img/".$fileName);
+                $path = $data['image']->store('product_img','public');
+                $path_access = asset('storage/'.$path);
+                $product->url_img = $path_access;
             }else echo ("khong ton tai img");
-            $path = $data['image']->store('product_img','public');
-            $path_access = asset('storage/'.$path);
-            $product->url_img = $path_access;
         }
         
         try {
-            
-            $product->name = $data['name'];
-            $product->description = $data['description'];
-            $product->price = $data['price'];
-
-            echo($product->name);
-            dd($product);
-            Product::updated($product);
-
+            $product->update([
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'price' => $data['price'],
+                'url_img'=>$path_access
+            ]);
+            if($product->wasChanged())  return Response()->json(['message'=>"update successfully",
+                "data"=>$product],200);
+            else return Response()->json(['message'=>"Error, make sure input not mistake field",],200);
         } catch (\Throwable $th) {
-            throw $th;
+             return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th->getMessage()],500);
+            
         }
+    }
+
+    public function deleteProductById(String $id_product){
+
     }
 }
