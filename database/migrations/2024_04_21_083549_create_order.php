@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('order', function (Blueprint $table) {
             $table-> uuid('id')->primary();
             $table-> string('status_order',16);
+            $table-> string("destination",50);
             $table-> timestamp('booking_date');
             $table-> string('user_id',100);
             $table-> string('voucher_id')->nullable(); 
+            $table->double("total_money");
             $table-> timestamps();
         });
     }

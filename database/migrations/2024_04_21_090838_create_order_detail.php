@@ -16,6 +16,7 @@ return new class extends Migration
             $table-> string('product_id',100)->nullable();
             $table->string('combo_product_id',100)->nullable();
             $table->unsignedInteger('quantity');
+            $table->double("total_money");
             $table->timestamps();
         });
     }
