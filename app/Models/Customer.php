@@ -18,17 +18,11 @@ class Customer extends Model
         "user_id",'accumulated_point'
     ];
 
-    public function customer():HasOne{
-        return $this->hasOne(Customer::class);
+    public function user():HasOne{
+        return $this->hasOne(User::class);
     }
 
-    public function admin():HasOne{
-        return $this->hasOne(Customer::class);
-    }
-
-    public function staff():HasOne{
-        return $this->hasOne(Customer::class);
-    }
+    
 
     protected $date = [
         "created_at","updated_at"

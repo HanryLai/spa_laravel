@@ -47,13 +47,8 @@ class UserController extends Controller
      */
     public function getById(String $id)
     {
-        try {
-            $user = User::find($id);
-            if(!$user) throw new Error("User not found",404);
-            return response()->json(["data"=>$user],200);
-        } catch (\Throwable $th) {
-            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
-        }
+        
+          return  $user = User::find($id);
         
     }
 

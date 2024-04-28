@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -63,6 +64,7 @@ class CustomerController extends Controller
         }
         $customer = new Customer();
         $customer = Customer::where('user_id', $user->id)->first();
+        // $customer = User::find($user->id)->customer;
         if(!$customer) return  response(['message'=>'not found this customer'],404);
         return response(['user'=>$user,'customer'=>$customer],200);
     }
