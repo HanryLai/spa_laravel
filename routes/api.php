@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ComboProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -14,6 +15,9 @@ Route::prefix('user')->group(function(){
 
     // get user by id
     Route::get("{id}",[UserController::class,"getById"]);
+
+    //get information role by id
+    Route::get("role/{id}",[UserController::class,"findRoleByUserId"]);
 
     // update user
     Route::patch("{id}/update",[UserController::class,"update"]);
@@ -49,13 +53,20 @@ Route::prefix('product')->group(function(){
     Route::delete("{id}",[ProductController::class,"deleteProductById"]);   
 });
 
-Route::post("file",function(Request $request){
-    if ($request->hasFile('photo')) {
-        // Lưu file vào thư mục public/images
-        $path = $request->file('photo')->store('images', 'public');
+Route::prefix('combo-product')->group(function(){
+    //find by id
+    Route::get('{id}', [ComboProductController::class,'findComboProductById']);
 
-        // Trả về đường dẫn của file đã tải lên để hiển thị hoặc lưu vào cơ sở dữ liệu
-        return $path;
-    }
-    return 'No file uploaded';
+    //find all
+    Route::get('', [ComboProductController::class,'getAll']);
+
+
+    // create new product
+    Route::post('',[ComboProductController::class,'create_combo_product']);
+
+    //update information product
+    Route::post('{id}',[ComboProductController::class,"update_combo_product"]);
+
+    //delete product by id
+    Route::delete("{id}",[ComboProductController::class,"deleteComboProductById"]);  
 });

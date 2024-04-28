@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Model
 {
@@ -23,6 +24,10 @@ class User extends Model
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
+
+    public function customer():HasOne{
+        return $this->hasOne(Customer::class);
+    }
 
     protected static function boot()
     {

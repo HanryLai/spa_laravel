@@ -16,8 +16,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = DB::table('user')->get();
-        return $users;
+        try {
+          $users = DB::table('user')->get();
+          if(!$users) throw new Error("Not exist any user",404);
+          return response()->json(["Message"=>"List users","data"=>$users],200);
+        } catch (\Throwable $th) {
+          return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+        }
     }
 
     /**
@@ -47,9 +52,7 @@ class UserController extends Controller
      */
     public function getById(String $id)
     {
-        
-          return  $user = User::find($id);
-        
+      return  $user = User::find($id);
     }
 
     /**
@@ -68,5 +71,7 @@ class UserController extends Controller
         return $user_current;
     }
     
-    
+    public function findRoleByUserId(String $id){
+      return $customer = User::find($id)->customer;
+    }
 }
