@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('combo_product_id',100);
             $table->unsignedInteger('quantity');
             $table->timestamps();
+            $table->primary(['product_id', 'combo_product_id']);
         });
     }
 
