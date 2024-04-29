@@ -75,7 +75,20 @@ Route::prefix('combo-product')->group(function(){
 
 Route::prefix('voucher')->group(function(){
 
+    //find voucher available
+    Route::get("available",[VoucherController::class,'findAllAvailable']);
+
+     //find voucher unavailable
+    Route::get("unavailable",[VoucherController::class,'findAllUnavailable']);
+
+    //find all
+    Route::get("all",[VoucherController::class,'findAllVoucher']);
+
+    //update voucher by id
+    Route::post('update/{id}',[VoucherController::class,'updateVoucherById']);
+
     //create new voucher
     Route::post('',[VoucherController::class,'create_voucher']);
+
 
 });
