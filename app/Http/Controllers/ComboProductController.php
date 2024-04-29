@@ -89,6 +89,9 @@ class ComboProductController extends Controller
 
     public function update_combo_product(Request $request,String $id_product){
         $combo_product = ComboProduct::find($id_product);
+        if(!$request->has('list_product')){
+                throw new Error("Please check field list_product, it is empty now");
+            }
         if(!$combo_product) return response()->json(["message"=>"not found this product"],404);
         $data = $request->all();
         $path_access = $data['image'];
@@ -109,9 +112,9 @@ class ComboProductController extends Controller
                 'price' => $data['price'],
                 'url_img'=>$path_access,
             ]);
-
-            ComboProductDetail::where('combo_product_id',$combo_product['id']);
-            //create list combo_product_detail
+            // delete full combo_product_detail old
+            ComboProductDetail::where('combo_product_id',$combo_product['id'])->delete();
+            //create new list combo_product_detail
             $listProduct =  collect();
             for($i = 0;$i<count($data['list_product']);$i++){
                 try {
@@ -129,8 +132,7 @@ class ComboProductController extends Controller
                 }
 
             }
-
-
+            
             if($combo_product->wasChanged())  return Response()->json(['message'=>"update successfully",
                 "data"=>$combo_product],200);
             else return Response()->json(['message'=>"Error, make sure input not mistake field",],200);
