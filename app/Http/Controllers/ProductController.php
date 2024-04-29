@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ComboProduct;
 use App\Models\Product;
 use Error;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class ProductController extends Controller
 {
@@ -31,7 +29,6 @@ class ProductController extends Controller
         } catch (\Throwable $th) {
             return response()->json(["error"=>$th->getMessage()],500);
         }
-
     }
 
     public function findProductById(String $id_product){
@@ -44,6 +41,21 @@ class ProductController extends Controller
         }
     }
 
+    public function findComboProductByProductID(String $product_id){
+        try {
+            $product = Product::find($product_id);
+            $details = $product->comboProductDetail;
+            $ComboProduct=[];
+            for($i = 0;$i<count($details);$i++){
+                $ComboProduct[] = $details[$i]->comboProduct;
+            }
+            
+            if($product)  return response()->json(["message"=>"combo product container product id".$product_id,"data"=>$ComboProduct],200);
+        } catch (\Throwable $th) {
+             return response()->json(["error"=>"combo product container product id ".$product_id,"data"=>$th->getMessage()],500);
+        }
+    }
+
     public function getAll(){
         try {
             $product = Product::all();
@@ -53,6 +65,8 @@ class ProductController extends Controller
            return response()->json(["error"=>"product by id ","data"=>$th->getMessage()],500);
         }
     }
+
+
 
     public function update_product(Request $request,String $id_product){
         $product = Product::find($id_product);

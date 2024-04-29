@@ -4,7 +4,7 @@ use App\Http\Controllers\ComboProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 use function League\Flysystem\InMemory\time;
@@ -39,9 +39,11 @@ Route::prefix('product')->group(function(){
     //find by id
     Route::get('{id}', [ProductController::class,'findProductById']);
 
+    // find combo product container product 
+    Route::get('{id}/combo-product',[ProductController::class,'findComboProductByProductID']);
+
     //find all
     Route::get('', [ProductController::class,'getAll']);
-
 
     // create new product
     Route::post('',[ProductController::class,'create_product']);
@@ -69,4 +71,11 @@ Route::prefix('combo-product')->group(function(){
 
     //delete product by id
     Route::delete("{id}",[ComboProductController::class,"deleteComboProductById"]);  
+});
+
+Route::prefix('voucher')->group(function(){
+
+    //create new voucher
+    Route::post('',[VoucherController::class,'create_voucher']);
+
 });

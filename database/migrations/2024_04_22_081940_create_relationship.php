@@ -44,9 +44,14 @@ return new class extends Migration
             $table->foreign('combo_product_id')->references('id')->on('combo_product');  
         });
 
-        Schema::table('category_detail',function(Blueprint $table){
+        Schema::table('category_product_detail',function(Blueprint $table){
             $table->foreign('category_id')->references('id')->on('category');
             $table->foreign('product_id')->references('id')->on('product');
+        });
+
+        Schema::table('category_combo_product_detail',function(Blueprint $table){
+            $table->foreign('category_id')->references('id')->on('category');
+            $table->foreign('combo_product_id')->references('id')->on('combo_product');
         });
     }
 
@@ -86,9 +91,14 @@ return new class extends Migration
              $table->dropForeign(['combo_product_id']);
         });
 
-        Schema::table('category_detail', function (Blueprint $table) {
+        Schema::table('category_product_detail', function (Blueprint $table) {
              $table->dropForeign(['category_id']);
              $table->dropForeign(['product_id']);
+        });
+
+        Schema::table('category_combo_product_detail', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+            $table->dropForeign(['combo_product_id']);
         });
     }
 };

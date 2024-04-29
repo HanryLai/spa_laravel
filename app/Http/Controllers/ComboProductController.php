@@ -6,6 +6,7 @@ use App\Models\ComboProduct;
 use App\Models\ComboProductDetail;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ComboProductController extends Controller
@@ -15,6 +16,7 @@ class ComboProductController extends Controller
     //  list quantity container int quantity of product
     public function create_combo_product(Request $request){
         try {
+            DB::beginTransaction();
             $data = $request->all();
             $access_url_img = null;
 
@@ -51,10 +53,11 @@ class ComboProductController extends Controller
                 } catch (\Throwable $th) {
                     throw new Error($th,500);
                 }
-
             }
+            DB::commit();
             return response()->json(["combo-product"=>$combo_product,"list-product"=>$listProduct],200);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json(["error"=>$th->getMessage()],500);
         }
     }
@@ -88,12 +91,14 @@ class ComboProductController extends Controller
     }
 
     public function update_combo_product(Request $request,String $id_product){
+        DB::beginTransaction();
         $combo_product = ComboProduct::find($id_product);
         if(!$request->has('list_product')){
                 throw new Error("Please check field list_product, it is empty now");
             }
         if(!$combo_product) return response()->json(["message"=>"not found this product"],404);
         $data = $request->all();
+        
         $path_access = $data['image'];
         if($request->hasFile('image')){
             $fileName = basename($combo_product->url_img);
@@ -133,12 +138,17 @@ class ComboProductController extends Controller
 
             }
             
-            if($combo_product->wasChanged())  return Response()->json(['message'=>"update successfully",
-                "data"=>$combo_product],200);
+            if($combo_product->wasChanged())  
+            {
+                
+                DB::commit();
+                return Response()->json(['message'=>"update successfully","data"=>$combo_product],200);
+            }
+            
             else return Response()->json(['message'=>"Error, make sure input not mistake field",],200);
         } catch (\Throwable $th) {
-             return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th->getMessage()],500);
-            
+            DB::rollBack();
+            return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th->getMessage()],500);
         }
     }
 

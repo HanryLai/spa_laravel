@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,4 +26,13 @@ class ComboProductDetail extends Model
     protected $date = [
         "created_at","updated_at"
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model){
+            $model->created_at = Carbon::now("Asia/Ho_Chi_Minh");
+            $model->updated_at = Carbon::now("Asia/Ho_Chi_Minh");
+        });
+    }
 }
