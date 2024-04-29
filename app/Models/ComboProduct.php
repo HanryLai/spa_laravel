@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ComboProduct extends Model
 {
@@ -24,6 +25,10 @@ class ComboProduct extends Model
     protected $date = [
         "created_at","updated_at"
     ];
+
+    public function comboProductDetails():HasMany{
+        return $this->hasMany(ComboProductDetail::class);
+    }
 
     protected static function boot()
     {

@@ -36,6 +36,7 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('product_id')->references('id')->on('product');
             $table->foreign('combo_product_id')->references('id')->on('combo_product');
+            $table->unique(['order_id','product_id','combo_product_id']);
         });
 
         Schema::table('combo_product_detail',function(Blueprint $table){
