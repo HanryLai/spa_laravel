@@ -18,10 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'ownCors' => \App\Http\Middleware\OwnCors::class,
         ]);
 
         //
     })
+    
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

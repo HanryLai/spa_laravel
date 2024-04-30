@@ -36,7 +36,7 @@ Route::prefix('customer')->group(function(){
     Route::patch("{customer_id}/update_point",[CustomerController::class,"update_accumulated_point"]);
 });
 
-Route::prefix('product')->group(function(){
+Route::middleware('ownCors')->prefix('product')->group(function(){
     //find by id
     Route::get('{id}', [ProductController::class,'findProductById']);
 
