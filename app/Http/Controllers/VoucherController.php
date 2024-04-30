@@ -14,13 +14,13 @@ class VoucherController extends Controller
 {
     public function create_voucher(Request $request){
         try {
-            DB::beginTransaction();;
+            DB::beginTransaction();
             if($request->hasFile('image')){
                 $path = $request->file('image')->store('voucher_img','public');
                 $img_access = asset('storage/'.$path);
             }
             else{
-                $img_access  = asset('storage/default.png');
+                $img_access  = asset('storage/'.env('DEFAULT_IMAGE','default.png'));
             }
             
             $data = $request->all();
@@ -97,13 +97,30 @@ class VoucherController extends Controller
             $voucher = Voucher::find($id_voucher);
             if(!$voucher) throw new Error('voucher not existed',404);
             $access_img = $voucher->url_img;
-            if($request->has('image')){
-                if(!basename($voucher->url_img) == "default.png"){
-                    Storage::delete('public/voucher_img'.basename($voucher->image));
+            //check req has img
+            $isRequestImg =$request->has('image');
+            
+            //check req has img default
+            $isDefaultImg = basename($request->file('image')) ==  env('DEFAULT_IMAGE','default.png');
+
+            //check server has img
+            $serverIsImg =  basename($voucher->url_img) ==  env('DEFAULT_IMAGE','default.png');
+
+            echo($isRequestImg . "\n".$isDefaultImg."\n".$serverIsImg."\n");
+
+            //check request have img and it diff default:do if:do else
+            if($isRequestImg&&!$isDefaultImg){
+                //check server dont have default img:do if :do else
+                if(!$serverIsImg){
+                    echo(" server dont have default img");
+                    Storage::delete('public/voucher_img/'.basename($voucher->url_img));
                 }
-                
+                else echo("default");
                 $name_img = $request->file('image')->store('voucher_img','public');
                 $access_img = asset('storage/'.$name_img);
+            }else{
+                Storage::delete("public/voucher_img/".basename($voucher->url_img));
+                $access_img = asset('storage/'.env('DEFAULT_IMAGE','default.png'));
             }
             $data = $request->all();
             $start_date = Carbon::createFromFormat('d/m/Y H:i:s',$data['start_date'] )->format('Y-m-d H:i:s');
@@ -120,7 +137,7 @@ class VoucherController extends Controller
             ]);
 
             if($voucher->wasChanged()) return response()->json(["message"=>"update voucher successfully","data"=>$voucher],200);
-            else throw new Error("update failed",404);
+            else throw new Error("not thing update",200);
         } catch (\Throwable $th) {
             return response()->json(["Error"=>$th->getMessage()],$th->getCode());
         }

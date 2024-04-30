@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ComboProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
@@ -91,4 +92,20 @@ Route::prefix('voucher')->group(function(){
     Route::post('',[VoucherController::class,'create_voucher']);
 
 
+});
+
+Route::prefix('blog')->group(function(){
+    
+    //get by id
+    Route::get('{id}',[BlogController::class,'findById']);
+
+    //get all
+    Route::get('',[BlogController::class,'findAll']);
+
+    //create new blog
+    Route::post('',[BlogController::class,'createBlog']);
+
+    //update blog
+    
+    
 });
