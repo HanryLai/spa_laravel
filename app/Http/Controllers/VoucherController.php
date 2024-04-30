@@ -142,7 +142,4 @@ class VoucherController extends Controller
             return response()->json(["Error"=>$th->getMessage()],$th->getCode());
         }
     }
-
-
-    
 }

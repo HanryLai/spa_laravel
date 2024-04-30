@@ -106,6 +106,6 @@ Route::prefix('blog')->group(function(){
     Route::post('',[BlogController::class,'createBlog']);
 
     //update blog
-    
+    Route::post('{id}/update',[BlogController::class,'updateBlog']);
     
 });

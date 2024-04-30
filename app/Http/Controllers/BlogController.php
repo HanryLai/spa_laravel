@@ -56,5 +56,45 @@ class BlogController extends Controller
         }
     }
 
-    
+    public function updateBlog(Request $request,string $id_blog){
+        try {
+            DB::beginTransaction();
+            $blog = Blog::find($id_blog);
+            if(!$blog) throw new Error("Not found this blog",404);
+            
+            //check request have img 
+            $requestIsImg = $request->has('image');
+
+            //check request img default
+            $requestIsDefaultImg = basename($request->file('image')) == env('DEFAULT_IMAGE ','default.png');
+
+            //check this blog container default img
+            $serverIsDefaultImg = basename($blog->url_img) == env('DEFAULT_IMAGE ','default.png');
+
+            echo($requestIsImg."\n".$requestIsDefaultImg."\n".$serverIsDefaultImg);
+
+            if($requestIsImg && !$requestIsDefaultImg){
+                if(!$requestIsDefaultImg){
+                    echo("server dont have default img");
+                    Storage::delete('public/blog_img/'.basename($blog->url_img));
+                }
+                else echo("Default");
+                $name_img = $request->file('image')->store('blog_img','public');
+                $access_img=asset('storage/'.$name_img);
+            }else{
+                Storage::delete("public/blog_img/".basename($blog->url_img));
+                $access_img = asset('storage/'.env('DEFAULT_IMAGE ','default.png'));
+            }
+            $data = $request->all();
+            $blog ->update([
+                'title'=>$data['title'],
+                'content'=>$data['content'],
+                'url_img'=> $access_img 
+            ]);
+            DB::commit();
+            return response()->json(['data'=>$blog],200);
+        } catch (\Throwable $th) {
+            return response()->json(['Error'=>$th],200);
+        }
+    }
 }
