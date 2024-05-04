@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('voucher_blog', function (Blueprint $table) {
             $table->string('voucher_id',100);
             $table->string('blog_id',100);
+            $table->primary(['voucher_id','blog_id']);
             $table->timestamps();
         });
     }

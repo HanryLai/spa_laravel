@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Voucher;
+use App\Models\VoucherBlog;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+
+use function Pest\Laravel\get;
 
 class BlogController extends Controller
 {
@@ -32,10 +36,9 @@ class BlogController extends Controller
     }
 
     public function createBlog(Request $request){
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $data = $request->all();
-
             $access_img = asset('storage/'.env('DEFAULT_IMAGE ','default.png'));
             if($request->has('image') && $request->file('image') != null){
                 $path = $request->file('image')->store('blog_img','public');
@@ -47,11 +50,31 @@ class BlogController extends Controller
             $blog->content = $data['content'];
             $blog->url_img = $access_img;
             $blog->save();
+
+            $vouchers = $data['voucher'];
+            $listVouchers = [];
+            foreach($vouchers as $voucher){
+                $new_voucher_blog = new VoucherBlogController();
+                
+                $result = $new_voucher_blog->createVoucher_Blog($voucher,$blog->id);
+                if($result){
+                    $listVouchers[] = $voucher;
+                }
+                else{
+                    throw new Error("Create blog_voucher error",500);
+                }
+            }
+
+            $blog->listVoucher = $listVouchers;
+
             DB::commit();
             return response()->json(["message"=>"create new blog","data"=>$blog],201);
         } catch (\Throwable $th) {
-            if(! $access_img == asset('storage/'.env('DEFAULT_IMAGE ','default.png')) ) Storage::delete('public/blog_img/'.basename($access_img));
             DB::rollBack();
+            
+            if($access_img != asset('storage/'.env('DEFAULT_IMAGE ','default.png')) ){
+                Storage::delete('public/blog_img/'.basename($access_img));
+            }
             return response($th);            
         }
     }
@@ -59,7 +82,43 @@ class BlogController extends Controller
     public function updateBlog(Request $request,string $id_blog){
         try {
             DB::beginTransaction();
+            // find old blog
             $blog = Blog::find($id_blog);
+            //get all data update
+            $data = $request->all();
+            // get all vouchers new in this blog
+            $vouchers_new = $data['voucher'];
+            //get all vouchers in old blog
+            $obj_voucherBlog = DB::table('voucher_blog')->where('blog_id',$id_blog)->get();
+            $vouchers_old = [];
+            foreach($obj_voucherBlog as $obj){
+                $vouchers_old[] = $obj->voucher_id;
+            }
+
+
+            // only old voucher -> delete this voucher_blog
+            $list_voucher_old = array_diff($vouchers_old,$vouchers_new);
+
+            // echo("vouchers old: ".implode(",",$vouchers_old)."\n");
+            // echo("vouchers new: ".implode(",",$vouchers_new)."\n");
+            // echo("list_voucher_old: ".implode(",",$list_voucher_old)."\n");
+            foreach($list_voucher_old as $voucher){
+                $controller = new VoucherBlogController();
+                $result = $controller->deteleVoucher_blog($voucher,$id_blog);
+                if($result instanceof \Throwable){
+                    throw $result;
+                }
+            }
+            //only new voucher
+            $list_voucher_new = array_diff($vouchers_new,$vouchers_old);
+            foreach($list_voucher_new as $voucher){
+                $controller = new VoucherBlogController();
+                $result = $controller->createVoucher_Blog($voucher,$id_blog);
+                if($result instanceof \Throwable){
+                    throw $result;
+                }
+            }
+
             if(!$blog) throw new Error("Not found this blog",404);
             
             //check request have img 
@@ -71,30 +130,35 @@ class BlogController extends Controller
             //check this blog container default img
             $serverIsDefaultImg = basename($blog->url_img) == env('DEFAULT_IMAGE ','default.png');
 
-            echo($requestIsImg."\n".$requestIsDefaultImg."\n".$serverIsDefaultImg);
 
             if($requestIsImg && !$requestIsDefaultImg){
                 if(!$requestIsDefaultImg){
-                    echo("server dont have default img");
                     Storage::delete('public/blog_img/'.basename($blog->url_img));
                 }
-                else echo("Default");
+               
                 $name_img = $request->file('image')->store('blog_img','public');
                 $access_img=asset('storage/'.$name_img);
             }else{
                 Storage::delete("public/blog_img/".basename($blog->url_img));
                 $access_img = asset('storage/'.env('DEFAULT_IMAGE ','default.png'));
             }
-            $data = $request->all();
+            
+
+
+
             $blog ->update([
                 'title'=>$data['title'],
                 'content'=>$data['content'],
                 'url_img'=> $access_img 
             ]);
+
+            $blog->list_voucher = $vouchers_new;
+
             DB::commit();
             return response()->json(['data'=>$blog],200);
         } catch (\Throwable $th) {
-            return response()->json(['Error'=>$th],200);
+            DB::rollBack();
+            return response()->json(['Error'=>$th->getMessage()],500);
         }
     }
 }

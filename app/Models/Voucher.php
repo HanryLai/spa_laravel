@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Voucher extends Model
 {
@@ -23,7 +24,9 @@ class Voucher extends Model
         'created_at','updated_at'
     ];
 
-    
+    public function voucher_blog():HasMany{
+        return $this->hasMany(VoucherBlog::class,"voucher_id");
+    }
 
     protected static function boot()
     {

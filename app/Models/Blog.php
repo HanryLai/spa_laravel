@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Blog extends Model
 {
@@ -22,6 +23,10 @@ class Blog extends Model
     protected $date = [
         'created_at','updated_at'
     ];
+
+    public function voucher_blog():HasMany{
+        return $this->hasMany(VoucherBlog::class,'blog_id');
+    }
 
     protected static function boot(){
         parent::boot();
