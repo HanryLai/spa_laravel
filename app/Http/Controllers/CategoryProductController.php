@@ -17,10 +17,10 @@ class CategoryProductController extends Controller
             $category_product->product_id = $product_id;
             $category_product->save();
             DB::commit();
-            return response()->json(["data"=>$category_product],201);
-        }catch(\Exception $e){
+            return $category_product->product()->get();
+        }catch(\Throwable $th){
             DB::rollBack();
-            return response()->json(["error"=>$e->getMessage()],500);
+            return $th;
         }
 
     }
@@ -35,10 +35,10 @@ class CategoryProductController extends Controller
             }
             $category_product->delete();
             DB::commit();
-            return response()->json(["data"=>$category_product],200);
-        }catch(\Exception $e){
+            return true;
+        }catch(\Throwable $th){
             DB::rollBack();
-            return response()->json(["error"=>$e->getMessage()],500);
+            return $th;
         }
     }
 

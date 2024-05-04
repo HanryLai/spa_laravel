@@ -25,6 +25,16 @@ class ProductController extends Controller
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->save();
+
+            // add list id category to product via table category_product_detail
+            $listCategory = $data['category'];
+            foreach($listCategory as $category){
+                echo($category);
+                $categoryProductDetail = new CategoryProductController();
+                $result = $categoryProductDetail->create_category_product($product->id,$category);
+                
+            }
+            
             return response()->json($product,200);
         } catch (\Throwable $th) {
             return response()->json(["error"=>$th->getMessage()],500);
