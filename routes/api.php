@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ComboProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
@@ -108,4 +109,16 @@ Route::prefix('blog')->group(function(){
     //update blog
     Route::post('{id}/update',[BlogController::class,'updateBlog']);
     
+});
+
+Route::prefix('category')->group(function(){
+    // get by id
+    Route::get('{id}',[CategoryController::class,'get_by_id']);
+    // get all category
+    Route::get('',[CategoryController::class,'get_all']);
+    //create new category
+    Route::post('',[CategoryController::class,'create_category']);
+    //update category
+    Route::patch('{id}',[CategoryController::class,'update_category']);
+
 });
