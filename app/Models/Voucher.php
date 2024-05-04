@@ -20,7 +20,7 @@ class Voucher extends Model
         'start_date','end_date'
     ];
 
-    protected $date = [
+    protected $dates = [
         'created_at','updated_at'
     ];
 

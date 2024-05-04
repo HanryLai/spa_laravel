@@ -17,7 +17,7 @@ class Admin extends Model
         "user_id",'accumulated_point'
     ];
 
-    protected $date = [
+    protected $dates = [
         "created_at","updated_at"
     ];
 

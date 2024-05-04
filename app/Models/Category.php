@@ -18,7 +18,7 @@ class Category extends Model
         "name","description"
     ];
 
-    protected $date = ["created_at","updated_at"];
+    protected $dates = ["created_at","updated_at"];
 
     protected static function boot(){
         parent::boot();

@@ -23,7 +23,7 @@ class ComboProductDetail extends Model
         return $this->belongsTo(Product::class);
     }
 
-    protected $date = [
+    protected $dates = [
         "created_at","updated_at"
     ];
 

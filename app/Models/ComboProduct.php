@@ -22,7 +22,7 @@ class ComboProduct extends Model
         "name","description","price",'url_img'
     ];
 
-    protected $date = [
+    protected $dates = [
         "created_at","updated_at"
     ];
 

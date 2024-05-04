@@ -22,7 +22,7 @@ class Customer extends Model
         return $this->hasOne(User::class);
     }
 
-    protected $date = [
+    protected $dates = [
         "created_at","updated_at"
     ];
 

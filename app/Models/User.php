@@ -19,7 +19,7 @@ class User extends Model
     protected $fillable = [
         "id",'username','email','phone','role','login_at'
     ];
-    protected $date = [
+    protected $dates = [
         'created_at','updated_at','login_at'
     ];
 

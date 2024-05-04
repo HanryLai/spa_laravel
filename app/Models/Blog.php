@@ -20,7 +20,7 @@ class Blog extends Model
         'title','url_img','content'
     ];
 
-    protected $date = [
+    protected $dates = [
         'created_at','updated_at'
     ];
 

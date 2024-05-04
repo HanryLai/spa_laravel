@@ -19,7 +19,7 @@ class VoucherBlog extends Model
         'blog_id','voucher_id'
     ];
 
-    protected $date = [
+    protected $dates = [
         "created_at","updated_at"
     ];
 
