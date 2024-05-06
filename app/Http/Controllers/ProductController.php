@@ -29,11 +29,13 @@ class ProductController extends Controller
             // add list id category to product via table category_product_detail
             $listCategory = $data['category'];
             foreach($listCategory as $category){
-                echo($category);
+                
                 $categoryProductDetail = new CategoryProductController();
                 $result = $categoryProductDetail->create_category_product($product->id,$category);
-                
+                if($result instanceof \Throwable) throw new Error($result->getMessage());
             }
+
+            $product->listCategories = $listCategory;
             
             return response()->json($product,200);
         } catch (\Throwable $th) {

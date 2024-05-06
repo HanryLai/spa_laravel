@@ -17,7 +17,7 @@ class CategoryProductController extends Controller
             $category_product->product_id = $product_id;
             $category_product->save();
             DB::commit();
-            return $category_product->product()->get();
+            return $category_product;
         }catch(\Throwable $th){
             DB::rollBack();
             return $th;

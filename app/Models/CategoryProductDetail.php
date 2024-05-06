@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CategoryProductDetail extends Model
 {
-    use HasUlids;
+    
     protected $table = 'category_product_detail';
     protected $primaryKey = ['category_id','product_id'];
     public $incrementing = false;
