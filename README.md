@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-##Technical using this project 
+# Technical using this project 
 <ul>
     <li>Programming language: PHP 8.2 </li>
     <li>Framework: Laravel 11.4 </li>
@@ -15,7 +15,7 @@
     <li>CI/CD: Github</li>
     <li>Build: Docker</li>
 </ul>
-##Feature
+# Feature
 <ul>
     <li>Booking product,combo product cosmetic - spa </li>
     <li>Voucher,category</li>
@@ -26,7 +26,7 @@
     <li>Docker</li>
     <li>Deploy project to server VPS</li>
 </ul>
-##How to run project
+# How to run project
 <i>you must install <a href='https://www.docker.com/'>Docker</a> before </i>
 <b>Step by Step to build project with Docker</b>
 <ul>
