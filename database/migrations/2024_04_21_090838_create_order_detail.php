@@ -12,19 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_product_detail', function (Blueprint $table) {
-            $table->string('order_id',100)->primary();
-            $table-> string('product_id',100)->nullable();
+            $table->string('order_id', 100);
+            $table->string('product_id',100);
             $table->unsignedInteger('quantity');
             $table->double("total_money");
             $table->timestamps();
+            $table->primary(['order_id', 'product_id']);
         });
 
         Schema::create('order_combo_product_detail', function (Blueprint $table) {
-            $table->string('order_id',100)->primary();
-            $table-> string('combo_product_id',100)->nullable();
+            $table->string('order_id', 100);
+            $table->string('combo_product_id',100);
             $table->unsignedInteger('quantity');
             $table->double("total_money");
             $table->timestamps();
+            $table->primary(['order_id', 'combo_product_id']);
         });
     }
 

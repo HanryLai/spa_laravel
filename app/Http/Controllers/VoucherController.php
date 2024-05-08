@@ -31,8 +31,9 @@ class VoucherController extends Controller
             $voucher->name = $data['name'];
             $voucher->content = $data['content'];
             $voucher->url_img = $img_access;
-            $voucher->money_discount = $data['money_discount'];
-            $voucher->percent_discount = $data['percent_discount'];
+            if($request->has('money_discount')) $voucher->money_discount = $data['money_discount'];
+            else if($request->has('percent_discount')) $voucher->percent_discount = $data['percent_discount'];
+            else throw new Error('money_discount or percent_discount must have value');
             $voucher->quantity = $data['quantity'];
             $voucher->start_date =$start_date;
             $voucher->end_date = $end_date;

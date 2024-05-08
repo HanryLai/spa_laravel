@@ -25,6 +25,8 @@ return new class extends Migration
 
         Schema::table('order', function (Blueprint $table) {
             $table->foreign('user_id')->references("id")->on('user');
+            $table->foreign('voucher_id')->references("id")->on('voucher');
+            
         });
 
         Schema::table('voucher_blog', function (Blueprint $table) {

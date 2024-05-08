@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderProductDetail extends Model
 {
-    use HasUlids;
     protected $table = "order_product_detail";
     protected $primaryKey = ["order_id","product_id"];
     protected $keyType = "string";

@@ -14,7 +14,7 @@ class OrderProductDetailController extends Controller
     {   
         DB::beginTransaction();
         try {
-            $list_product = $list_product;
+            
             $list_product_id =[];
             $list_quantity = [];
             foreach($list_product as $list_item){
@@ -28,7 +28,7 @@ class OrderProductDetailController extends Controller
                 $orderProductDetail->order_id = $id_order;
                 $orderProductDetail->product_id = $product_id;
                 $orderProductDetail->quantity = $list_quantity[$key];
-
+                
                 $product = Product::find($product_id);
                 if(!$product){
                     throw new Error("Product not found");

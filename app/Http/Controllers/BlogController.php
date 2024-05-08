@@ -57,11 +57,12 @@ class BlogController extends Controller
                 $new_voucher_blog = new VoucherBlogController();
                 
                 $result = $new_voucher_blog->createVoucher_Blog($voucher,$blog->id);
-                if($result){
-                    $listVouchers[] = $voucher;
+                if($result instanceof \Throwable){
+                    throw $result;
                 }
                 else{
-                    throw new Error("Create blog_voucher error",500);
+                    
+                    $listVouchers[] = $voucher;
                 }
             }
 
