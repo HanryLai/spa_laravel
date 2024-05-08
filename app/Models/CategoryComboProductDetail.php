@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class CategoryComboProductDetail extends Model
 {
-    use HasUlids;
     protected $table = 'category_combo_product_detail';
     protected $primaryKey = ['category_id','combo_product_id'];
     public $incrementing = false;

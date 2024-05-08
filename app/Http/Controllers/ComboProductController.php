@@ -54,8 +54,21 @@ class ComboProductController extends Controller
                     throw new Error($th,500);
                 }
             }
+            // create category_combo_product_detail 
+            $listCategory = $data['category'];
+            $listCategories = collect();
+            foreach($listCategory as $category){
+                $categoryComboProductDetail = new CategoryComboProductController();
+                $result = $categoryComboProductDetail->create_category_combo_product($combo_product->id,$category);
+                if($result instanceof \Throwable) throw new Error($result->getMessage());
+                $listCategories->push($category);
+            }
+
+            $combo_product->listCategories = $listCategories;
+            $combo_product->listProducts = $listProduct;
+
             DB::commit();
-            return response()->json(["combo-product"=>$combo_product,"list-product"=>$listProduct],200);
+            return response()->json(["combo-product"=>$combo_product],200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(["error"=>$th->getMessage()],500);
@@ -98,7 +111,6 @@ class ComboProductController extends Controller
             }
         if(!$combo_product) return response()->json(["message"=>"not found this product"],404);
         $data = $request->all();
-        
         $path_access = $data['image'];
         if($request->hasFile('image')){
             $fileName = basename($combo_product->url_img);
@@ -135,16 +147,38 @@ class ComboProductController extends Controller
                 } catch (\Throwable $th) {
                     throw new Error($th,500);
                 }
-
             }
             
+            // update category_combo_product_detail
+            $listCategory_id_new = $data['category'];
+            // find category in dbs
+            $listCategory_old = DB::table('category_combo_product_detail')->where('combo_product_id',$id_product)->get();
+            $listCategory_id_old = [];
+            foreach($listCategory_old as $category){
+                $listCategory_id_old[] = $category->category_id;
+            }
+            // handle update category_combo_product_detail
+            $list_category_id_only_new = array_diff($listCategory_id_new,$listCategory_id_old);
+            $list_category_id_only_old = array_diff($listCategory_id_old,$listCategory_id_new);
+            foreach($list_category_id_only_new as $category_id){
+                $categoryComboProductDetail = new CategoryComboProductController();
+                $result = $categoryComboProductDetail->create_category_combo_product($combo_product->id,$category_id);
+                if($result instanceof \Throwable) throw new Error($result->getMessage());
+            }
+
+            foreach($list_category_id_only_old as $category_id){
+                $categoryComboProductDetail = new CategoryComboProductController();
+                $result = $categoryComboProductDetail->delete_category_combo_product($combo_product->id,$category_id);
+                if($result instanceof \Throwable) throw new Error($result->getMessage());
+            }
+
+            //handle update success
             if($combo_product->wasChanged())  
             {
-                
                 DB::commit();
                 return Response()->json(['message'=>"update successfully","data"=>$combo_product],200);
             }
-            
+            //handle update fail
             else return Response()->json(['message'=>"Error, make sure input not mistake field",],200);
         } catch (\Throwable $th) {
             DB::rollBack();

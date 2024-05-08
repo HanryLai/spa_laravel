@@ -15,12 +15,15 @@ class CategoryComboProductController extends Controller
             $category_combo_product = new CategoryComboProductDetail();
             $category_combo_product->category_id = $category_id;
             $category_combo_product->combo_product_id = $combo_product_id;
+            echo("\nbefore hehehe");
             $category_combo_product->save();
             DB::commit();
+            echo("\nheheheh\n");
             return response()->json(["data"=>$category_combo_product],201);
-        }catch(\Exception $e){
+        }catch(\Throwable $th){
             DB::rollBack();
-            return response()->json(["error"=>$e->getMessage()],500);
+            echo("\huhuhuhuhu\n");
+            return $th;
         }
     }
 
@@ -32,12 +35,12 @@ class CategoryComboProductController extends Controller
             if($category_combo_product == null){
                 return response()->json(["message"=>"Not exist this category combo product"],404);
             }
-            $category_combo_product->delete();
+            $result = DB::table('category_combo_product_detail')->where('combo_product_id',$combo_product_id)->where('category_id',$category_id)->delete();
             DB::commit();
             return response()->json(["data"=>$category_combo_product],200);
-        }catch(\Exception $e){
+        }catch(\Throwable $th){
             DB::rollBack();
-            return response()->json(["error"=>$e->getMessage()],500);
+            return $th;
         }
     }
     
