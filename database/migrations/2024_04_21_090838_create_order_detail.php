@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_detail', function (Blueprint $table) {
+        Schema::create('order_product_detail', function (Blueprint $table) {
             $table->string('order_id',100)->primary();
             $table-> string('product_id',100)->nullable();
-            $table->string('combo_product_id',100)->nullable();
+            $table->unsignedInteger('quantity');
+            $table->double("total_money");
+            $table->timestamps();
+        });
+
+        Schema::create('order_combo_product_detail', function (Blueprint $table) {
+            $table->string('order_id',100)->primary();
+            $table-> string('combo_product_id',100)->nullable();
             $table->unsignedInteger('quantity');
             $table->double("total_money");
             $table->timestamps();
@@ -26,6 +33,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_detail');
+        Schema::dropIfExists('order_product_detail');
+        Schema::dropIfExists('order_combo_product_detail');
     }
 };

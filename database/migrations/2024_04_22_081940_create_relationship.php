@@ -32,9 +32,14 @@ return new class extends Migration
             $table->foreign('blog_id')->references('id')->on('blog');
         });
 
-        Schema::table('order_detail', function (Blueprint $table) {
+        Schema::table('order_product_detail', function (Blueprint $table) {
             $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('product_id')->references('id')->on('product');
+            // $table->unique(['order_id','product_id','combo_product_id']);
+        });
+
+        Schema::table('order_combo_product_detail', function (Blueprint $table) {
+            $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('combo_product_id')->references('id')->on('combo_product');
             // $table->unique(['order_id','product_id','combo_product_id']);
         });
@@ -80,9 +85,13 @@ return new class extends Migration
              $table->dropForeign(['voucher_id']);
         });
 
-        Schema::table('order_detail', function (Blueprint $table) {
+        Schema::table('order_product_detail', function (Blueprint $table) {
             $table->dropForeign(['order_id']);
             $table->dropForeign(['product_id']);
+        });
+
+        Schema::table('order_combo_product_detail', function (Blueprint $table) {
+            $table->dropForeign(['order_id']);
             $table->dropForeign(['combo_product_id']);
         });
 
