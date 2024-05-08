@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Voucher;
-use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
 use Error;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -67,7 +65,6 @@ class OrderController extends Controller
                     //discount base on money
                     
                     if($voucher->money_discount > 0){
-                        $type_discount = "money";
                         $total = collect($list_orderProductDetail)->sum('total_money') + collect($list_orderComboProductDetail)->sum('total_money');
                         $total -= $voucher->money_discount;
                         if($total < 0){
@@ -76,7 +73,6 @@ class OrderController extends Controller
                     }
                     //discount base on percent
                     else if($voucher->percent_discount > 0 && $voucher->percent_discount <= 100){
-                        $type_discount = "percent";
                         $total = collect($list_orderProductDetail)->sum('total_money') + collect($list_orderComboProductDetail)->sum('total_money');
                         $total -= $total * $voucher->percent_discount / 100;
                         if($total < 0){
