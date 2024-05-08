@@ -37,6 +37,4 @@ class OrderProductDetail extends Model
             $model->updated_at = Carbon::now("Asia/Ho_Chi_Minh");
         });
     }
-
-
 }

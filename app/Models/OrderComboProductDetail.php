@@ -14,7 +14,7 @@ class OrderComboProductDetail extends Model
     protected $keyType = "string";
     public $incrementing = false;
     protected $fillable = [
-        "order_id",'combo_product_id','quantity','total_money'
+        'order_id','combo_product_id','quantity','total_money'
     ];
     protected $dates = [
         "created_at","updated_at"

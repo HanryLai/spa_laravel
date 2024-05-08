@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ComboProduct;
 use App\Models\OrderComboProductDetail;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class OrderComboProductDetailController extends Controller
 {
@@ -26,7 +28,10 @@ class OrderComboProductDetailController extends Controller
                 $combo_product = ComboProduct::find($combo_product_id);
                 
                 $orderComboProductDetail->total_money = $combo_product->price * $list_quantity[$key];
-                $orderComboProductDetail->save();
+                $result = $orderComboProductDetail->save();
+                if(!$result){
+                    throw new Error("Error when create order combo product detail");
+                }
                 $list_orderComboProductDetail[] = $orderComboProductDetail;
             }
             DB::commit();

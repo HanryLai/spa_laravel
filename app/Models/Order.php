@@ -17,13 +17,11 @@ class Order extends Model
     protected $fillable = [
         'status_order',
         'destination',
-        'booking_date',
         'user_id',
         'voucher_id',
         'total_money'
     ];
     protected $datas = [
-        'booking_date',
         'created_at',
         'updated_at'
     ];

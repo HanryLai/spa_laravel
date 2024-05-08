@@ -15,13 +15,13 @@ class ComboProductController extends Controller
     // input list_product container array id product and
     //  list quantity container int quantity of product
     public function create_combo_product(Request $request){
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $data = $request->all();
             $access_url_img = null;
 
             //create image
-            if($request->hasFile('image')){
+            if($request->has('image')){
                 $path = $request->file('image')->store('combo_product_img','public');
                 $access_url_img = asset("storage/".$path);
             }
@@ -71,6 +71,7 @@ class ComboProductController extends Controller
             return response()->json(["combo-product"=>$combo_product],200);
         } catch (\Throwable $th) {
             DB::rollBack();
+            if($access_url_img) Storage::delete("public/combo_product_img/".basename($access_url_img));
             return response()->json(["error"=>$th->getMessage()],500);
         }
     }

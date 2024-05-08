@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     public function create_product(Request $request){
+        Db::beginTransaction();
         try {
             $data = $request->all();
             $access_url_img = null;
-            if($request->hasFile('image')){
+            if($request->has('image')){
                 $path = $request->file('image')->store('product_img','public');
                 $access_url_img = asset("storage/".$path);
             }
@@ -37,9 +38,11 @@ class ProductController extends Controller
             }
 
             $product->listCategories = $listCategory;
-            
+            DB::commit();
             return response()->json($product,200);
         } catch (\Throwable $th) {
+            DB::rollBack();
+            if($access_url_img) Storage::delete("public/product_img/".basename($access_url_img));
             return response()->json(["error"=>$th->getMessage()],500);
         }
     }

@@ -4,18 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderProductDetail;
 use App\Models\Product;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderProductDetailController extends Controller
 {
-    public function createOrderProductDetail(Request $request, string $id_order)
+    public function createOrderProductDetail(array $list_product, string $id_order)
     {   
         DB::beginTransaction();
         try {
-            $data = $request->all();
-            $list_product_id = $data['product_id'];
-            $list_quantity = $data['quantity'];
+            $list_product = $list_product;
+            $list_product_id =[];
+            $list_quantity = [];
+            foreach($list_product as $list_item){
+                $list_product_id[] = $list_item['product_id'];
+                $list_quantity[] = $list_item['quantity'];
+            }
+
             $list_orderProductDetail = [];
             foreach($list_product_id as $key => $product_id){
                 $orderProductDetail = new OrderProductDetail();
@@ -24,9 +30,15 @@ class OrderProductDetailController extends Controller
                 $orderProductDetail->quantity = $list_quantity[$key];
 
                 $product = Product::find($product_id);
+                if(!$product){
+                    throw new Error("Product not found");
+                }
                 
                 $orderProductDetail->total_money = $product->price * $list_quantity[$key];
-                $orderProductDetail->save();
+                $result = $orderProductDetail->save();
+                if(!$result){
+                    throw new Error("Error when create order product detail");
+                }
                 $list_orderProductDetail[] = $orderProductDetail;
             }
             DB::commit();
