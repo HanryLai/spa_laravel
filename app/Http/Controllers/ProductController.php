@@ -7,6 +7,7 @@ use App\Models\ComboProduct;
 use App\Models\Product;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -94,6 +95,34 @@ class ProductController extends Controller
                 $path_access = asset('storage/'.$path);
                 $product->url_img = $path_access;
             }else echo ("khong ton tai img");
+        }
+
+        // update detail category product
+        $category_old = DB::table('category_product_detail')->where('product_id',$id_product)->get();
+        $array_category_id_old = [];
+
+        $category_new = $data['category'];
+        echo("\n"."category old"."\n");
+        foreach($category_old as $category){
+           $array_category_id_old[] = $category->category_id;
+        }
+        echo('category_arr_old'.implode(",",$array_category_id_old)."\n");
+        echo("\n"."category new"."\n");
+        foreach($category_new as $category){
+            echo($category);
+        }
+
+        $list_category_only_old = array_diff($array_category_id_old,$category_new);
+        $list_category_only_new = array_diff($category_new,$array_category_id_old);
+        $tmpCategoryDetail = new CategoryProductController();
+        foreach($list_category_only_old as $old){
+            $result = $tmpCategoryDetail->delete_category_product($product->id,$old);
+            if($result instanceof \Throwable) throw new Error($result->getMessage(),$result->getCode());
+        }
+
+        foreach($list_category_only_new as $new){
+            $result = $tmpCategoryDetail->create_category_product($product->id,$new);
+            if($result instanceof \Throwable) throw new Error($result->getMessage(),$result->getCode());
         }
         
         try {

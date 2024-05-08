@@ -33,7 +33,9 @@ class CategoryProductController extends Controller
             if($category_product == null){
                 return response()->json(["message"=>"Not exist this category product"],404);
             }
-            $category_product->delete();
+            
+            $result = DB::table('category_product_detail')->where('product_id',$product_id)->where('category_id',$category_id)->delete();
+            
             DB::commit();
             return true;
         }catch(\Throwable $th){

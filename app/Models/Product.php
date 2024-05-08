@@ -24,8 +24,12 @@ class Product extends Model
         "created_at","updated_at"
     ];
 
+    public function categoryProductDetail():HasMany{
+        return $this->hasMany(CategoryProductDetail::class,'product_id','id');
+    }
+
     public function comboProductDetail():HasMany{
-        return $this->hasMany(ComboProductDetail::class);
+        return $this->hasMany(ComboProductDetail::class,'product_id','id');
     }
 
     
