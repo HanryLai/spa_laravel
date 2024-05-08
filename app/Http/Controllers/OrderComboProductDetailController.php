@@ -14,18 +14,18 @@ class OrderComboProductDetailController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $list_product_id = $data['product_id'];
+            $list_combo_product_id = $data['combo_product_id'];
             $list_quantity = $data['quantity'];
             $list_orderComboProductDetail = [];
-            foreach($list_product_id as $key => $product_id){
+            foreach($list_combo_product_id as $key => $combo_product_id){
                 $orderComboProductDetail = new OrderComboProductDetail();
                 $orderComboProductDetail->order_id = $id_order;
-                $orderComboProductDetail->product_id = $product_id;
+                $orderComboProductDetail->combo_product_id = $combo_product_id;
                 $orderComboProductDetail->quantity = $list_quantity[$key];
 
-                $product = ComboProduct::find($product_id);
+                $combo_product = ComboProduct::find($combo_product_id);
                 
-                $orderComboProductDetail->total_money = $product->price * $list_quantity[$key];
+                $orderComboProductDetail->total_money = $combo_product->price * $list_quantity[$key];
                 $orderComboProductDetail->save();
                 $list_orderComboProductDetail[] = $orderComboProductDetail;
             }

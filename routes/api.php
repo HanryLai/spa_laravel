@@ -4,6 +4,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ComboProductController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
@@ -121,4 +122,10 @@ Route::prefix('category')->group(function(){
     //update category
     Route::patch('{id}',[CategoryController::class,'update_category']);
 
+});
+
+Route::prefix('order')->group(function(){
+    //create new order
+    Route::post('',[OrderController::class,'createOrder']);
+    
 });
