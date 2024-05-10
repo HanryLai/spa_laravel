@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('email',15)->unique();
             $table->string('phone',15)->unique();
             $table->string('role',8);
+            $table->string('password',255)->nullable();
+            $table->string('url_avatar')->nullable();
+            $table->string('access_token')->nullable();
+            $table->string('refresh_token')->nullable();
             $table->timestamp('login_at')->nullable();
             $table->timestamps();
         });

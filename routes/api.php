@@ -130,5 +130,5 @@ Route::prefix('order')->group(function(){
     //create new order
     Route::post('',[OrderController::class,'createOrder']);
     //update status order
-    Route::patch('{id}/update-status',[OrderController::class,'updateStatusOrder']);
+    Route::patch('{id}/update-status',[OrderController::class,'updateStatus']);
 });
