@@ -1,10 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Customer;
 use App\Models\User;
-use ArrayObject;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -87,4 +84,6 @@ class UserController extends Controller
     public function findRoleByUserId(String $id){
       return $customer = User::find($id)->customer;
     }
-}
+
+    // Authorization
+  }

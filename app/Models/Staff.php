@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Staff extends Model
@@ -21,8 +22,8 @@ class Staff extends Model
         "created_at","updated_at"
     ];
 
-    public function user():HasOne{
-        return $this->hasOne(User::class);
+    public function user():BelongsTo{
+        return $this->belongsTo(User::class,"user_id","id");
     }
 
     protected static function boot()

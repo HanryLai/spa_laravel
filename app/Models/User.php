@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends Model
+class User extends Model implements JWTSubject
 {
     use HasUlids;
     protected $table = "user";
@@ -37,6 +37,16 @@ class User extends Model
             $model->created_at = Carbon::now('Asia/Ho_Chi_Minh');
             $model->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
         });
+    }
+    // JWT
+     public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
     
 

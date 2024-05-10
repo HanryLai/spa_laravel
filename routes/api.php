@@ -7,11 +7,24 @@ use App\Http\Controllers\ComboProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 
-use function League\Flysystem\InMemory\time;
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
+
+    Route::post('login', [UserController::class,'login']);
+    // Route::post('logout', 'AuthController@logout');
+    // Route::post('refresh', 'AuthController@refresh');
+    // Route::post('me', 'AuthController@me');
+
+});
 
 Route::prefix('user')->group(function(){
     //get all user account 
@@ -50,6 +63,19 @@ Route::prefix('admin')->group(function(){
 
     //update accumulated point
     Route::patch("{admin_id}/update_point",[AdminController::class,"update_accumulated_point"]);
+});
+
+Route::prefix('staff')->group(function(){
+    //get all staff
+    Route::get('',[StaffController::class,"index"]);
+    //get by id
+    Route::get('{id}',[StaffController::class,"findById"]);
+
+    //create new staff
+    Route::post('create-staff',[StaffController::class,"createStaff"]);
+
+    //update accumulated point
+    Route::patch("{staff_id}/update_point",[StaffController::class,"update_accumulated_point"]);
 });
 
 Route::prefix('product')->group(function(){
