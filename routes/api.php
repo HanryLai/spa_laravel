@@ -13,6 +13,7 @@ use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login',[UserController::class,"login"]);
+Route::post('verify',[UserController::class,"verify"]);
 
 Route::prefix('user')->group(function(){
     //get all user account 
