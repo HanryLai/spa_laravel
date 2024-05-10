@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function findOrderById(string $order_id){
+        $order = Order::find($order_id);
+        if($order){
+            $order->orderProductDetail;
+            $order->orderComboProductDetail;
+            return response()->json(["message"=>"find order success","data"=>$order],200);
+        }
+        return response()->json(["message"=>"order not found"],404);
+    }
+
     public function createOrder(Request $request){
         DB::beginTransaction();
         try {
@@ -98,5 +108,16 @@ class OrderController extends Controller
             DB::rollBack();
             return $th;
         }
+    }
+
+    public function updateStatus(Request $request, string $order_id){
+        $order = Order::find($order_id);
+        if($order){
+            $order->status_order = $request->status_order;
+            $order->update();
+            return response()->json(["message"=>"update status order success","data"=>$order],200);
+        }
+        return response()->json(["message"=>"order not found"],404);
+
     }
 }

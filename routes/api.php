@@ -125,7 +125,10 @@ Route::prefix('category')->group(function(){
 });
 
 Route::prefix('order')->group(function(){
+    //get by id
+    Route::get('{id}',[OrderController::class,'findOrderById']);
     //create new order
     Route::post('',[OrderController::class,'createOrder']);
-    
+    //update status order
+    Route::patch('{id}/update-status',[OrderController::class,'updateStatusOrder']);
 });

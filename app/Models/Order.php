@@ -26,6 +26,14 @@ class Order extends Model
         'updated_at'
     ];
 
+    protected function orderProductDetail(){
+        return $this->hasMany(OrderProductDetail::class,'order_id','id');
+    }
+
+    protected function orderComboProductDetail(){
+        return $this->hasMany(OrderComboProductDetail::class,'order_id','id');
+    }
+
     protected static function boot()
     {
         parent::boot();
