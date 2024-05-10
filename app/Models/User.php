@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Model
 {
-    
+    use HasUlids;
     protected $table = "user";
     protected $primaryKey = 'id';
     public $incrementing = false;

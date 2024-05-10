@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ComboProductController;
@@ -36,6 +37,19 @@ Route::prefix('customer')->group(function(){
 
     //update accumulated point
     Route::patch("{customer_id}/update_point",[CustomerController::class,"update_accumulated_point"]);
+});
+
+Route::prefix('admin')->group(function(){
+    //get all admin
+    Route::get('',[AdminController::class,"index"]);
+    //get by id
+    Route::get('{id}',[AdminController::class,"findById"]);
+
+    //create new admin
+    Route::post('create-admin',[AdminController::class,"createAdmin"]);
+
+    //update accumulated point
+    Route::patch("{admin_id}/update_point",[AdminController::class,"update_accumulated_point"]);
 });
 
 Route::prefix('product')->group(function(){

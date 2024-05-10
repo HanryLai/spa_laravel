@@ -33,17 +33,30 @@ class UserController extends Controller
       try {
             $new_user = new User;
             $body = $request->all();
-            $new_user->id = $body["id"];
+            if($request->has('id')){
+              $new_user->id = $body["id"];
+            }
             $new_user->username = $body["username"];
             $new_user->email = $body["email"];
             $new_user->phone = $body["phone"];
             $new_user->role = $body["role"];
             $new_user->login_at = null;
-            $new_user->save();
+            // password exist (password use for admin,staff or customer of website)
+            if($request->has('password') && $body['role'] != 'customer'){
+              $new_user->password = bcrypt($body["password"]);
+            }
+            else if( $body['role'] == 'customer'){
+              $new_user->password = null;
+            }
+            else{
+              throw new Error("Password is required",400);
+            }
 
+            $new_user->save();
+            // dd($new_user);
             return $new_user;
       } catch (\Throwable $th) {
-        return $th;
+        throw $th;
       }
     }
 

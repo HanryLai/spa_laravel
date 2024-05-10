@@ -31,6 +31,9 @@ class CustomerController extends Controller
     {
         try {
             // create new user
+            if($request->role != 'customer'){
+                return response(['message'=>'role must be customer'],400);
+            }
             $userCtrl = new UserController();
             $user =  $userCtrl->create_user($request); 
             echo($user->id);
