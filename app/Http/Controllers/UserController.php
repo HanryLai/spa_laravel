@@ -86,4 +86,9 @@ class UserController extends Controller
     }
 
     // Authorization
+    public function login(Request $request){
+      $jwtController = new JWTController();
+      $jwt = $jwtController->generateJWT($request->id);
+      return response()->json(["token"=>$jwt],200);
+    }
   }
