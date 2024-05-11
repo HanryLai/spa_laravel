@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Payload;
 
 class JWTController extends Controller
 {
-    function generateJWT($userId,$role)
+    function generateJWT(string $userId,string $role,bool $is_refreshToken)
     {
         $header = [
             'typ' => 'JWT',
@@ -20,6 +21,9 @@ class JWTController extends Controller
             'iat' => time(),
             'exp' => time() + 10, // 1 hour
         ];
+        if($is_refreshToken){
+            $payload['exp'] = time() + 60*60*24*30; // 30 days
+        }
         
 
         $encodedHeader = base64_encode(json_encode($header));
@@ -32,7 +36,8 @@ class JWTController extends Controller
         return $token;
     }
 
-    function verityJWT($token_input){
+    function verityJWT($authrization){
+        $token_input = explode(" ",$authrization)[1];
         $tokenParts = explode('.', $token_input);
         $header = base64_decode($tokenParts[0]);
         $payload = base64_decode($tokenParts[1]);
@@ -55,6 +60,7 @@ class JWTController extends Controller
 
         return $payload;
     }
+    
 
     function getPayload($token_input){
         $tokenParts = explode('.', $token_input);

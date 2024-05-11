@@ -85,18 +85,5 @@ class UserController extends Controller
       return $customer = User::find($id)->customer;
     }
 
-    // Authorization
-    public function login(Request $request){
-      $jwtController = new JWTController();
-      $jwt = $jwtController->generateJWT($request->id,$request->role);
-      return response()->json(["token"=>$jwt],200);
-    }
-
-    public function verify(Request $request){
-      $jwtController = new JWTController();
-      $token = $request->header('authorization');
-      $token = explode(' ',$token)[1];
-      $verify = $jwtController->verityJWT($token);
-      return response()->json(["verify"=>$verify],200);
-    }
+    
   }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ComboProductController;
@@ -10,12 +11,21 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Middleware\CheckToken;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsStaff;
+use App\Http\Middleware\IsStaffAdmin;
 use Illuminate\Support\Facades\Route;
 
-Route::post('login',[UserController::class,"login"]);
-Route::post('verify',[UserController::class,"verify"]);
+Route::prefix('auth')->group(function(){
+    //login
+    Route::post('login',[AuthController::class,"login"]);
 
-Route::prefix('user')->group(function(){
+    //logout
+    Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class)  ;
+});
+
+Route::prefix('user')->middleware(IsStaffAdmin::class)->group(function(){
     //get all user account 
     Route::get('',[UserController::class,"index"]);
 
@@ -29,7 +39,7 @@ Route::prefix('user')->group(function(){
     Route::patch("{id}/update",[UserController::class,"update"]);
 });
 
-Route::prefix('customer')->group(function(){
+Route::prefix('customer')->middleware(IsStaffAdmin::class)->group(function(){
     // get all customer
     Route::get('',[CustomerController::class,"index"]);
     // get account and detail information by id
@@ -41,7 +51,7 @@ Route::prefix('customer')->group(function(){
     Route::patch("{customer_id}/update_point",[CustomerController::class,"update_accumulated_point"]);
 });
 
-Route::prefix('admin')->group(function(){
+Route::prefix('admin')->middleware(IsAdmin::class)->group(function(){
     //get all admin
     Route::get('',[AdminController::class,"index"]);
     //get by id
@@ -54,7 +64,7 @@ Route::prefix('admin')->group(function(){
     Route::patch("{admin_id}/update_point",[AdminController::class,"update_accumulated_point"]);
 });
 
-Route::prefix('staff')->group(function(){
+Route::prefix('staff')->middleware(IsAdmin::class)->group(function(){
     //get all staff
     Route::get('',[StaffController::class,"index"]);
     //get by id
@@ -78,13 +88,13 @@ Route::prefix('product')->group(function(){
     Route::get('', [ProductController::class,'getAll']);
 
     // create new product
-    Route::post('',[ProductController::class,'create_product']);
+    Route::post('',[ProductController::class,'create_product'])->middleware(IsStaffAdmin::class);
 
     //update information product
-    Route::post('{id}',[ProductController::class,"update_product"]);
+    Route::post('{id}',[ProductController::class,"update_product"])->middleware(IsStaffAdmin::class);
 
     //delete product by id
-    Route::delete("{id}",[ProductController::class,"deleteProductById"]);   
+    Route::delete("{id}",[ProductController::class,"deleteProductById"])->middleware(IsStaffAdmin::class);   
 });
 
 Route::prefix('combo-product')->group(function(){
@@ -96,13 +106,13 @@ Route::prefix('combo-product')->group(function(){
 
 
     // create new product
-    Route::post('',[ComboProductController::class,'create_combo_product']);
+    Route::post('',[ComboProductController::class,'create_combo_product'])->middleware(IsStaffAdmin::class);
 
     //update information product
-    Route::post('{id}',[ComboProductController::class,"update_combo_product"]);
+    Route::post('{id}',[ComboProductController::class,"update_combo_product"])->middleware(IsStaffAdmin::class);
 
     //delete product by id
-    Route::delete("{id}",[ComboProductController::class,"deleteComboProductById"]);  
+    Route::delete("{id}",[ComboProductController::class,"deleteComboProductById"])->middleware(IsStaffAdmin::class);  
 });
 
 Route::prefix('voucher')->group(function(){
@@ -117,10 +127,10 @@ Route::prefix('voucher')->group(function(){
     Route::get("all",[VoucherController::class,'findAllVoucher']);
 
     //update voucher by id
-    Route::post('update/{id}',[VoucherController::class,'updateVoucherById']);
+    Route::post('update/{id}',[VoucherController::class,'updateVoucherById'])->middleware(IsStaffAdmin::class);
 
     //create new voucher
-    Route::post('',[VoucherController::class,'create_voucher']);
+    Route::post('',[VoucherController::class,'create_voucher'])->middleware(IsStaffAdmin::class);
 
 
 });
@@ -134,10 +144,10 @@ Route::prefix('blog')->group(function(){
     Route::get('',[BlogController::class,'findAll']);
 
     //create new blog
-    Route::post('',[BlogController::class,'createBlog']);
+    Route::post('',[BlogController::class,'createBlog'])->middleware(IsStaffAdmin::class);
 
     //update blog
-    Route::post('{id}/update',[BlogController::class,'updateBlog']);
+    Route::post('{id}/update',[BlogController::class,'updateBlog'])->middleware(IsStaffAdmin::class);
     
 });
 
@@ -147,9 +157,9 @@ Route::prefix('category')->group(function(){
     // get all category
     Route::get('',[CategoryController::class,'get_all']);
     //create new category
-    Route::post('',[CategoryController::class,'create_category']);
+    Route::post('',[CategoryController::class,'create_category'])->middleware(IsStaffAdmin::class);
     //update category
-    Route::patch('{id}',[CategoryController::class,'update_category']);
+    Route::patch('{id}',[CategoryController::class,'update_category'])->middleware(IsStaffAdmin::class);
 
 });
 
@@ -159,5 +169,5 @@ Route::prefix('order')->group(function(){
     //create new order
     Route::post('',[OrderController::class,'createOrder']);
     //update status order
-    Route::patch('{id}/update-status',[OrderController::class,'updateStatus']);
+    Route::patch('{id}/update-status',[OrderController::class,'updateStatus'])->middleware(IsStaffAdmin::class);
 });
