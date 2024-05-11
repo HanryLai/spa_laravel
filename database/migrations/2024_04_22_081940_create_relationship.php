@@ -80,6 +80,7 @@ return new class extends Migration
 
         Schema::table('order', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
+            $table->dropForeign(['voucher_id']);
         });
 
         Schema::table('voucher_blog', function (Blueprint $table) {
