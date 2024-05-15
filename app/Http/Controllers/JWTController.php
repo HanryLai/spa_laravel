@@ -19,7 +19,7 @@ class JWTController extends Controller
             'user_id' => $userId,
             'role'=>$role,
             'iat' => time(),
-            'exp' => time() + 10, // 1 hour
+            'exp' => time() + 60*30, // 1 hour
         ];
         if($is_refreshToken){
             $payload['exp'] = time() + 60*60*24*30; // 30 days

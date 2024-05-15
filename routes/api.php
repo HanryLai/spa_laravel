@@ -12,6 +12,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Middleware\CheckToken;
+use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsStaff;
 use App\Http\Middleware\IsStaffAdmin;

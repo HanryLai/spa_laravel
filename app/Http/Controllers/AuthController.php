@@ -49,7 +49,9 @@ class AuthController extends Controller
             ],200);
         }
         catch(\Throwable $th){
-            return $th;
+return response()->json([
+                'message' => 'Login fail'
+            ],400);
         }
     }
 
