@@ -23,7 +23,7 @@ Route::prefix('auth')->group(function(){
     Route::post('login',[AuthController::class,"login"]);
 
     //logout
-    Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class)  ;
+    Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class);
 });
 // 
 Route::prefix('user')->middleware(IsAdmin::class)->group(function(){
