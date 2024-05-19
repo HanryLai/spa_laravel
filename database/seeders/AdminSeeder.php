@@ -20,6 +20,7 @@ class AdminSeeder extends Seeder
         $user->password = bcrypt('123');
         $user->phone = '0123456789';
         $user->role = "admin";
+        $user->url_avatar = env('SERVER_DOMAIN','http://localhost:8000').'/storage/default.png';
         $user->save();
 
         $admin = new Admin();
