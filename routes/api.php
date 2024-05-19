@@ -25,8 +25,8 @@ Route::prefix('auth')->group(function(){
     //logout
     Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class)  ;
 });
-
-Route::prefix('user')->middleware(IsStaffAdmin::class)->group(function(){
+// 
+Route::prefix('user')->middleware(IsAdmin::class)->group(function(){
     //get all user account 
     Route::get('',[UserController::class,"index"]);
 

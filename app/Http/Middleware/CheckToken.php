@@ -16,8 +16,9 @@ class CheckToken
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->hasHeader('Authorization')){
-            $authrization = $request->header('Authorization');
+
+        if($request->cookie('access_token')){
+            $authrization = $request->cookie('access_token');
             $jwtController = new JWTController();
             $result = $jwtController->verityJWT($authrization);
             if($result == false){
@@ -28,9 +29,7 @@ class CheckToken
             else{
                 return $next($request);
             }
-        }
-        return response()->json(["message"=>"Token is not exist"],401);
-        
+        }  
     }
 
 }

@@ -19,7 +19,7 @@ class JWTController extends Controller
             'user_id' => $userId,
             'role'=>$role,
             'iat' => time(),
-            'exp' => time() + 60*30, // 1 hour
+            'exp' => time() + 60*30,
         ];
         if($is_refreshToken){
             $payload['exp'] = time() + 60*60*24*30; // 30 days
@@ -37,28 +37,32 @@ class JWTController extends Controller
     }
 
     function verityJWT($authrization){
-        $token_input = explode(" ",$authrization)[1];
-        $tokenParts = explode('.', $token_input);
-        $header = base64_decode($tokenParts[0]);
-        $payload = base64_decode($tokenParts[1]);
-        $signatureProvided = $tokenParts[2];
-        
-        $header = json_decode($header, JSON_OBJECT_AS_ARRAY);
+        try {
+            $token_input = $authrization;
+            $tokenParts = explode('.', $token_input);
+            $header = base64_decode($tokenParts[0]);
+            $payload = base64_decode($tokenParts[1]);
+            $signatureProvided = $tokenParts[2];
+            
+            $header = json_decode($header, JSON_OBJECT_AS_ARRAY);
 
-        $payload = json_decode($payload, JSON_OBJECT_AS_ARRAY);
-        
-        $signature = hash_hmac('sha256', $tokenParts[0] . '.' . $tokenParts[1], env('JWT_SECRET'));
+            $payload = json_decode($payload, JSON_OBJECT_AS_ARRAY);
+            
+            $signature = hash_hmac('sha256', $tokenParts[0] . '.' . $tokenParts[1], env('JWT_SECRET'));
 
-        if ($signature !== $signatureProvided) {
-            return false;
+            if ($signature !== $signatureProvided) {
+                return false;
+            }
+
+            $time = time();
+            if ($time < $payload['iat'] || $time > $payload['exp']) {
+                return false;
+            }
+
+            return $payload;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        $time = time();
-        if ($time < $payload['iat'] || $time > $payload['exp']) {
-            return false;
-        }
-
-        return $payload;
     }
     
 

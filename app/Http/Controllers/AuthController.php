@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -43,10 +42,11 @@ class AuthController extends Controller
             $user->access_token = $token;
             $user->refresh_token = $jwtController->generateJWT($user->id,$user->role,true);
             $user->save();
-            return response()->json([
+            return  response()->json([
                 'message' => 'Login success',
                 'data' => $user
             ],200);
+           
         }
         catch(\Throwable $th){
 return response()->json([
