@@ -85,6 +85,9 @@ Route::prefix('product')->group(function(){
     // find combo product container product 
     Route::get('{id}/combo-product',[ProductController::class,'findComboProductByProductID']);
 
+    // get category by product id
+    Route::get('category/{product_id}',[ProductController::class,'findCategoryByProductId']);
+    
     //find all
     Route::get('', [ProductController::class,'getAll']);
 

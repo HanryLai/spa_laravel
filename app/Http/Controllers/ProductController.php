@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\ComboProduct;
 use App\Models\Product;
 use Error;
@@ -13,10 +14,13 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     public function create_product(Request $request){
+        $test = $request->all();
+        // return response()->json(["data"=>$test],200);
         Db::beginTransaction();
         try {
             $data = $request->all();
-            $access_url_img = null;
+            
+            $access_url_img = "123";
             if($request->has('image')){
                 $path = $request->file('image')->store('product_img','public');
                 $access_url_img = asset("storage/".$path);
@@ -27,7 +31,9 @@ class ProductController extends Controller
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->save();
+            echo $product;
 
+            
             // add list id category to product via table category_product_detail
             $listCategory = $data['category'];
             foreach($listCategory as $category){
@@ -79,6 +85,16 @@ class ProductController extends Controller
             else throw new Error("Not found this product");
         } catch (\Throwable $th) {
            return response()->json(["error"=>"product by id ","data"=>$th->getMessage()],500);
+        }
+    }
+
+    public function findCategoryByProductId(string $product_id){
+        try {
+            $listCategory = DB::table("category_product_detail")->where('product_id',$product_id)->get("category_id");
+            if($listCategory) return response()->json(['message'=> 'category by product id '.$product_id,'data'=>$listCategory],200);
+            else throw new Error("Not found category by product id ".$product_id,404);
+        } catch (\Throwable $th) {
+            return response()->json(["error"=> $th->getMessage(),500]);
         }
     }
 
@@ -157,7 +173,7 @@ class ProductController extends Controller
             $product->delete();
             return response()->json(["message"=>"delete successfully"],200);
         } catch (\Throwable $th) {
-             return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
+             return Response()->json(["Error"=>$th->getMessage()],500);
         } 
     }
 }
