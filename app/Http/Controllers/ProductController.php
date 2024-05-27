@@ -7,8 +7,10 @@ use App\Models\Category;
 use App\Models\ComboProduct;
 use App\Models\Product;
 use Error;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -155,25 +157,32 @@ class ProductController extends Controller
                 "data"=>$product],200);
             else return Response()->json(['message'=>"Error, make sure input not mistake field",],200);
         } catch (\Throwable $th) {
-             return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th->getMessage()],500);
-            
+             return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th],500);
         }
     }
 
     public function deleteProductById(String $id_product){
         try {
-            // find product
-            $product = Product::find($id_product);
-            if(!$product) throw new Error( "Not found product this product",404);
-            //get name img product
-            $img_access = basename($product->url_img);
-            Storage::delete("public/product_img/".$img_access);
-            // check exist or not to confirm image product was deleted 
-            if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
-            $product->delete();
+            DB::transaction(function () use ($id_product) {
+                // find product
+                $product = Product::find($id_product);
+                if(!$product) throw new Error( "Not found product this product",404);
+                //get name img product
+                $img_access = basename($product->url_img);
+                Storage::delete("public/product_img/".$img_access);
+                // check exist or not to confirm image product was deleted 
+                if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
+                
+                
+                    $detail_category_product = DB::table('category_product_detail')->where('product_id',$id_product)
+                    ->update([
+                        'product_id'=> $id_product,
+                    ]);
+                    $product->delete();
+            });
             return response()->json(["message"=>"delete successfully"],200);
         } catch (\Throwable $th) {
-             return Response()->json(["Error"=>$th->getMessage()],500);
+            return Response()->json(["Error"=>$th->getMessage()],500);
         } 
     }
 }
