@@ -9,6 +9,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\Statistical;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Middleware\CheckToken;
@@ -177,4 +178,14 @@ Route::prefix('order')->group(function(){
     Route::post('',[OrderController::class,'createOrder']);
     //update status order
     Route::patch('{id}/update-status',[OrderController::class,'updateStatus'])->middleware(IsStaffAdmin::class);
+});
+
+Route::prefix('dashboard')->group(function(){
+    // product is about to expired
+    Route::get("about-to-expired",[Statistical::class,"aboutToExpired"]);
+
+    // product is about to out of stock
+    Route::post("",[Statistical::class,""]);
+
+    //product is 
 });
