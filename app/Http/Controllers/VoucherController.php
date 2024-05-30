@@ -99,7 +99,7 @@ class VoucherController extends Controller
             if(!$voucher) throw new Error('voucher not existed',404);
             $access_img = $voucher->url_img;
             //check req has img
-            $isRequestImg =$request->has('image');
+            $isRequestImg =$request->hasFile('image');
             
             //check req has img default
             $isDefaultImg = basename($request->file('image')) ==  env('DEFAULT_IMAGE','default.png');
@@ -113,7 +113,7 @@ class VoucherController extends Controller
             if($isRequestImg&&!$isDefaultImg){
                 //check server dont have default img:do if :do else
                 if(!$serverIsImg){
-                    echo(" server dont have default img");
+                    echo(" server dont have default img\n");
                     Storage::delete('public/voucher_img/'.basename($voucher->url_img));
                 }
                 else echo("default");
@@ -140,7 +140,31 @@ class VoucherController extends Controller
             if($voucher->wasChanged()) return response()->json(["message"=>"update voucher successfully","data"=>$voucher],200);
             else throw new Error("not thing update",200);
         } catch (\Throwable $th) {
-            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+            return response()->json(["Error"=>$th],500);
         }
     }
+
+    public function deleteVoucherById(string $voucher_id){
+        try {
+            DB::transaction(function () use ($voucher_id) {
+                
+                $voucher = Voucher::find($voucher_id);
+                if(!$voucher) throw new Error( "Not found this voucher",404);
+                $img_access = basename($voucher->url_img);
+                Storage::delete("public/voucher_img/".$img_access);
+                if(Storage::exists("public/voucher_img/".$img_access)) throw new Error("Delete image voucher faild",500);
+                
+                
+                    $voucher_blog= DB::table('voucher_blog')->where('voucher_id',$voucher_id)
+                    ->update([
+                        'voucher_id'=> $voucher_id,
+                    ]);
+                    $voucher->delete();
+                });
+                return response()->json(["message"=>"delete successfully"],200);
+            } catch (\Throwable $th) {
+                return Response()->json(["Error"=>$th->getMessage()],500);
+            } 
+        }
+    
 }

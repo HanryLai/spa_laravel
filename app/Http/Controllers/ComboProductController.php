@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ComboProduct;
 use App\Models\ComboProductDetail;
+use App\Models\Voucher;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,19 @@ use Illuminate\Support\Facades\Storage;
 
 class ComboProductController extends Controller
 {
+
+    public function getVoucherById(string $id){
+        try{
+            $voucher = Voucher::find($id);
+            if(!$voucher){
+                throw new Error("cannot found this voucher");
+            }
+            return response()->json(["message"=>"voucher by id ".$id,"data"=>$voucher],200);
+        }
+        catch(\Exception $e){
+          return response()->json(["error"=>"voucher by id ".$id,"data"=>$e->getMessage()],500);
+        }
+    }
 
     // input list_product container array id product and
     //  list quantity container int quantity of product

@@ -12,9 +12,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Middleware\CheckToken;
-use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsAdmin;
-use App\Http\Middleware\IsStaff;
 use App\Http\Middleware\IsStaffAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -121,22 +119,27 @@ Route::prefix('combo-product')->group(function(){
 
 Route::prefix('voucher')->group(function(){
 
+    //find all
+    Route::get("all",[VoucherController::class,'findAllVoucher']);
+
+    //find by id
+    Route::get('{id}', [ComboProductController::class,'getVoucherById']);
+
     //find voucher available
     Route::get("available",[VoucherController::class,'findAllAvailable']);
 
      //find voucher unavailable
     Route::get("unavailable",[VoucherController::class,'findAllUnavailable']);
 
-    //find all
-    Route::get("all",[VoucherController::class,'findAllVoucher']);
-
+    
     //update voucher by id
     Route::post('update/{id}',[VoucherController::class,'updateVoucherById'])->middleware(IsStaffAdmin::class);
 
     //create new voucher
     Route::post('',[VoucherController::class,'create_voucher'])->middleware(IsStaffAdmin::class);
 
-
+    //delete voucher by id
+    Route::delete('{id}',[VoucherController::class,'deleteVoucherById'])->middleware(IsStaffAdmin::class);
 });
 
 Route::prefix('blog')->group(function(){
