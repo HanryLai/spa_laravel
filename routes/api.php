@@ -181,11 +181,19 @@ Route::prefix('order')->group(function(){
 });
 
 Route::prefix('dashboard')->group(function(){
-    // product is about to expired
-    Route::get("about-to-expired",[Statistical::class,"aboutToExpired"]);
+    //get total product
+    Route::get("total-product-in-stock",[Statistical::class,"totalProductInStock"]);
 
-    // product is about to out of stock
-    Route::post("",[Statistical::class,""]);
+    //get products in stock
+    Route::get("products-in-stock",[Statistical::class,"productInStock"]);
+    
+    // product-almost-out-of-stock
+    Route::get("product-almost-out-of-stock",[Statistical::class,"almostOutOfStock"]);
 
-    //product is 
+    // product-out-of-stock
+    Route::get("product-out-of-stock",[Statistical::class,"outOfStock"]);
+
+    //get product out of stock
+
+
 });

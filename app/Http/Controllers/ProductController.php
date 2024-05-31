@@ -32,6 +32,7 @@ class ProductController extends Controller
             $product->url_img = $access_url_img;
             $product->description = $data['description'];
             $product->price = $data['price'];
+            $product->quantity = $data['quantity'];
             $product->save();
             echo $product;
 
@@ -151,6 +152,7 @@ class ProductController extends Controller
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'price' => $data['price'],
+                'quantity' => $data['quantity'],
                 'url_img'=>$path_access
             ]);
             if($product->wasChanged())  return Response()->json(['message'=>"update successfully",
