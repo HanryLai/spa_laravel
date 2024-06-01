@@ -37,6 +37,8 @@
     <li>php artisan migrate</li>
     <!-- run seeder to create sample data -->
     <li>php artisan db:seed --class=AdminSeeder  
+    <!-- create link: to link storage in public folder -->
+    <li>php artisan storage:link</li>
     <li>php artisan serve</li>
 </ul>
 
