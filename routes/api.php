@@ -156,6 +156,9 @@ Route::prefix('blog')->group(function(){
 
     //update blog
     Route::post('{id}/update',[BlogController::class,'updateBlog'])->middleware(IsStaffAdmin::class);
+
+    //delete blog
+    Route::delete('{id}',[BlogController::class,'deleteBlog'])->middleware(IsStaffAdmin::class);
     
 });
 

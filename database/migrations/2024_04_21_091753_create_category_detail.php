@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('category_product_detail', function (Blueprint $table) {
             $table->string('category_id',100);
-            $table->string('product_id',100);
+            $table->string('product_id',100)->nullable(true);
             $table->timestamps();
             $table->primary(['category_id','product_id']);
         });

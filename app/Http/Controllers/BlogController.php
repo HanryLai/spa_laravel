@@ -162,4 +162,26 @@ class BlogController extends Controller
             return response()->json(['Error'=>$th->getMessage()],500);
         }
     }
+
+    public function deleteBlog (string $blog_id){
+        try {
+            DB::beginTransaction();
+            $blog = Blog::find($blog_id);
+            if(!$blog) throw new Error("Not found this blog",404);
+            $vouchers = DB::table('voucher_blog')->where('blog_id',$blog_id)->get();
+            foreach($vouchers as $voucher){
+                $controller = new VoucherBlogController();
+                $result = $controller->deteleVoucher_blog($voucher->voucher_id,$blog_id);
+                if($result instanceof \Throwable){
+                    throw $result;
+                }
+            }
+            $blog->delete();
+            DB::commit();
+            return response()->json(["message"=>"delete blog success"],200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+        }
+    }
 }
