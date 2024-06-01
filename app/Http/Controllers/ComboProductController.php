@@ -46,6 +46,7 @@ class ComboProductController extends Controller
             $combo_product->url_img = $access_url_img;
             $combo_product->description = $data['description'];
             $combo_product->price = $data['price'];
+            $combo_product->quantity = $data['quantity'];
             $combo_product->save();
 
             if(!$request->has('list_product')){
@@ -142,6 +143,7 @@ class ComboProductController extends Controller
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'price' => $data['price'],
+                'quantity'=>$data['quantity'],
                 'url_img'=>$path_access,
             ]);
             // delete full combo_product_detail old

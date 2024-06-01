@@ -139,12 +139,12 @@ class ProductController extends Controller
         $tmpCategoryDetail = new CategoryProductController();
         foreach($list_category_only_old as $old){
             $result = $tmpCategoryDetail->delete_category_product($product->id,$old);
-            if($result instanceof \Throwable) throw new Error($result->getMessage(),$result->getCode());
+            if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
         }
 
         foreach($list_category_only_new as $new){
             $result = $tmpCategoryDetail->create_category_product($product->id,$new);
-            if($result instanceof \Throwable) throw new Error($result->getMessage(),$result->getCode());
+            if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
         }
         
         try {
