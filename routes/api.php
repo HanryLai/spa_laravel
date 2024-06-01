@@ -172,6 +172,9 @@ Route::prefix('category')->group(function(){
     //update category
     Route::patch('{id}',[CategoryController::class,'update_category'])->middleware(IsStaffAdmin::class);
 
+    // delete category
+    Route::delete('{id}',[CategoryController::class,'delete_category'])->middleware(IsStaffAdmin::class);
+
 });
 
 Route::prefix('order')->group(function(){

@@ -201,20 +201,24 @@ class ComboProductController extends Controller
         }
     }
 
-    // public function deleteComboProductById(String $id_product){
-    //     try {
-    //         // find product
-    //         $combo_product = ComboProduct::find($id_product);
-    //         if(!$combo_product) throw new Error( "Not found product this product",404);
-    //         //get name img product
-    //         $img_access = basename($combo_product->url_img);
-    //         Storage::delete("public/product_img/".$img_access);
-    //         // check exist or not to confirm image product was deleted 
-    //         if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
-    //         $combo_product->delete();
-    //         return response()->json(["message"=>"delete successfully"],200);
-    //     } catch (\Throwable $th) {
-    //          return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
-    //     } 
-    // }
+    public function deleteComboProductById(String $id_product){
+        try {
+            // find product
+            $combo_product = ComboProduct::find($id_product);
+            if(!$combo_product) throw new Error( "Not found product this product",404);
+            //get name img product
+            $img_access = basename($combo_product->url_img);
+            Storage::delete("public/product_img/".$img_access);
+            // check exist or not to confirm image product was deleted 
+            if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
+            
+            DB::table("combo_product_detail")->where("combo_product_id",$id_product)->delete();
+            DB::table("category_combo_product_detail")->where("combo_product_id",$id_product)->delete();
+            DB::table('order_combo_product_detail')->where('combo_product_id',$id_product)->delete();
+            $combo_product->delete();
+            return response()->json(["message"=>"delete successfully"],200);
+        } catch (\Throwable $th) {
+             return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
+        } 
+    }
 }

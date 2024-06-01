@@ -37,7 +37,6 @@ return new class extends Migration
         Schema::table('order_product_detail', function (Blueprint $table) {
             $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('product_id')->references('id')->on('product');
-            // $table->unique(['order_id','product_id','combo_product_id']);
         });
 
         Schema::table('order_combo_product_detail', function (Blueprint $table) {
@@ -65,6 +64,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+    
     public function down(): void
     {
        Schema::table('customer', function (Blueprint $table) {

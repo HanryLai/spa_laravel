@@ -174,13 +174,15 @@ class ProductController extends Controller
                 Storage::delete("public/product_img/".$img_access);
                 // check exist or not to confirm image product was deleted 
                 if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
-                
-                $detail_category_product = DB::table('category_product_detail')->where('product_id',$id_product)
-                ->update([
-                    'product_id'=> $id_product,
-                ]);
-                
-                if($detail_category_product == 0) throw new Error("Delete category product detail faild",500);
+                $listCategory = DB::table('category_product_detail')->where('product_id',$id_product)->get();
+                foreach($listCategory as $category){
+                    $categoryProductDetail = new CategoryProductController();
+                    $result = $categoryProductDetail->delete_category_product($product->id,$category->category_id);
+                    if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
+                }
+                DB::table('combo_product_detail')->where('product_id',$id_product)->delete();
+                DB::table('order_product_detail')->where('product_id',$id_product)->delete();
+                $product->delete();
                 
             });
             return response()->json(["message"=>"delete successfully"],200);
