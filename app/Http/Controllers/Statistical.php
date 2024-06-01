@@ -22,7 +22,7 @@ class Statistical extends Controller
         return response()->json($product); 
     }
 
-    public function totalProductInStock(){
+    public function productInStock(){
         $product = DB::table('product')->where('quantity','=',
         0)->get();
         return response()->json($product);

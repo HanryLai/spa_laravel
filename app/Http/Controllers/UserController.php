@@ -33,10 +33,15 @@ class UserController extends Controller
             if($request->has('id')){
               $new_user->id = $body["id"];
             }
+
+            
+
+
             $new_user->username = $body["username"];
             $new_user->email = $body["email"];
             $new_user->phone = $body["phone"];
             $new_user->role = $body["role"];
+            
             $new_user->login_at = null;
             // password exist (password use for admin,staff or customer of website)
             if($request->has('password') && $body['role'] != 'customer'){

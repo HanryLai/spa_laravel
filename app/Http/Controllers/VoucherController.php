@@ -57,7 +57,7 @@ class VoucherController extends Controller
             if($voucher) return response()->json(["message"=>"find voucher by id","data"=>$voucher],200);
             else throw new Error("voucher not existed",404);
         } catch (\Throwable $th) {
-            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+            return response()->json(["Error"=>$th->getMessage()],500);
         }
     }
 
@@ -68,7 +68,7 @@ class VoucherController extends Controller
             if($vouchers) return response()->json(["message"=>"find all voucher available","data"=>$vouchers],200);
             else throw new Error("voucher not existed",404);
         } catch (\Throwable $th) {
-            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+            return response()->json(["Error"=>$th->getMessage()],500);
         }
     }
 
@@ -79,7 +79,7 @@ class VoucherController extends Controller
             if($vouchers) return response()->json(["message"=>"find all voucher Unavailable","data"=>$vouchers],200);
             else throw new Error("voucher not existed",404);
         } catch (\Throwable $th) {
-            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+            return response()->json(["Error"=>$th->getMessage()],500);
         }
     }
 
@@ -89,7 +89,7 @@ class VoucherController extends Controller
             if($vouchers) return response()->json(["message"=>"find all voucher ","data"=>$vouchers],200);
             else throw new Error("Not have any voucher",404);
         } catch (\Throwable $th) {
-           return response()->json(["Error"=>$th->getMessage()],$th->getCode());
+           return response()->json(["Error"=>$th->getMessage()],500);
         }
     }
 

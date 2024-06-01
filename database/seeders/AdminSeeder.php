@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+        // admin
         $user = new User();
         $user->username = 'Admin';
         $user->email = 'ldmhieudev@gmail.com';
@@ -28,8 +29,14 @@ class AdminSeeder extends Seeder
         $admin->user_id = $user->id;
         $admin->save();
         
+        //category
         $category  = new Category();
         $category->name = "danh mục mẫu";
+        $category->description = "Mẩu khởi tạo dbs";
+        $category->save();
+
+        $category  = new Category();
+        $category->name = "danh mục mẫu - 2";
         $category->description = "Mẩu khởi tạo dbs";
         $category->save();
 

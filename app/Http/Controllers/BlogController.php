@@ -40,7 +40,7 @@ class BlogController extends Controller
         try {
             $data = $request->all();
             $access_img = asset('storage/'.env('DEFAULT_IMAGE ','default.png'));
-            if($request->has('image') && $request->file('image') != null){
+            if($request->hasFile('image') && $request->fileFile('image') != null){
                 $path = $request->file('image')->store('blog_img','public');
                 $access_img = asset('storage/'.$path);
             }
@@ -123,7 +123,7 @@ class BlogController extends Controller
             if(!$blog) throw new Error("Not found this blog",404);
             
             //check request have img 
-            $requestIsImg = $request->has('image');
+            $requestIsImg = $request->hasFile('image');
 
             //check request img default
             $requestIsDefaultImg = basename($request->file('image')) == env('DEFAULT_IMAGE ','default.png');

@@ -23,7 +23,7 @@ class ProductController extends Controller
             $data = $request->all();
             
             $access_url_img = "123";
-            if($request->has('image')){
+            if($request->hasFile('image')){
                 $path = $request->file('image')->store('product_img','public');
                 $access_url_img = asset("storage/".$path);
             }
