@@ -47,7 +47,7 @@ class AdminController extends Controller
             // return user and admin
             return response()->json(["user"=>$user,"admin"=>$admin],201);
         } catch (\Throwable $th) {
-           return ($th);
+           return response()->json(["message"=>$th->getMessage()],500);
         }
     }
 
