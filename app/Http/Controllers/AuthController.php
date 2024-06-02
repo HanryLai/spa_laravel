@@ -45,11 +45,11 @@ class AuthController extends Controller
             return  response()->json([
                 'message' => 'Login success',
                 'data' => $user
-            ],200);
+            ],200)->cookie('access_token',$token,60*3);
            
         }
         catch(\Throwable $th){
-return response()->json([
+        return response()->json([
                 'message' => 'Login fail'
             ],400);
         }
