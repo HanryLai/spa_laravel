@@ -93,6 +93,4 @@ class CustomerController extends Controller
             return response()->json($th,500);
         }
     }
-
-    
 }

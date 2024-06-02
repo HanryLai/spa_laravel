@@ -3,21 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\ComboProduct;
 use App\Models\Product;
 use Error;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function create_product(Request $request){
+        $test = $request->all();
+        // return response()->json(["data"=>$test],200);
         Db::beginTransaction();
         try {
             $data = $request->all();
-            $access_url_img = null;
-            if($request->has('image')){
+            
+            $access_url_img = "123";
+            if($request->hasFile('image')){
                 $path = $request->file('image')->store('product_img','public');
                 $access_url_img = asset("storage/".$path);
             }
@@ -26,8 +32,11 @@ class ProductController extends Controller
             $product->url_img = $access_url_img;
             $product->description = $data['description'];
             $product->price = $data['price'];
+            $product->quantity = $data['quantity'];
             $product->save();
+            echo $product;
 
+            
             // add list id category to product via table category_product_detail
             $listCategory = $data['category'];
             foreach($listCategory as $category){
@@ -82,6 +91,16 @@ class ProductController extends Controller
         }
     }
 
+    public function findCategoryByProductId(string $product_id){
+        try {
+            $listCategory = DB::table("category_product_detail")->where('product_id',$product_id)->get("category_id");
+            if($listCategory) return response()->json(['message'=> 'category by product id '.$product_id,'data'=>$listCategory],200);
+            else throw new Error("Not found category by product id ".$product_id,404);
+        } catch (\Throwable $th) {
+            return response()->json(["error"=> $th->getMessage(),500]);
+        }
+    }
+
 
 
     public function update_product(Request $request,String $id_product){
@@ -120,12 +139,12 @@ class ProductController extends Controller
         $tmpCategoryDetail = new CategoryProductController();
         foreach($list_category_only_old as $old){
             $result = $tmpCategoryDetail->delete_category_product($product->id,$old);
-            if($result instanceof \Throwable) throw new Error($result->getMessage(),$result->getCode());
+            if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
         }
 
         foreach($list_category_only_new as $new){
             $result = $tmpCategoryDetail->create_category_product($product->id,$new);
-            if($result instanceof \Throwable) throw new Error($result->getMessage(),$result->getCode());
+            if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
         }
         
         try {
@@ -133,31 +152,42 @@ class ProductController extends Controller
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'price' => $data['price'],
+                'quantity' => $data['quantity'],
                 'url_img'=>$path_access
             ]);
             if($product->wasChanged())  return Response()->json(['message'=>"update successfully",
                 "data"=>$product],200);
             else return Response()->json(['message'=>"Error, make sure input not mistake field",],200);
         } catch (\Throwable $th) {
-             return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th->getMessage()],500);
-            
+             return Response()->json(['message'=>"Error, make sure input not mistake field","error"=>$th],500);
         }
     }
 
     public function deleteProductById(String $id_product){
         try {
-            // find product
-            $product = Product::find($id_product);
-            if(!$product) throw new Error( "Not found product this product",404);
-            //get name img product
-            $img_access = basename($product->url_img);
-            Storage::delete("public/product_img/".$img_access);
-            // check exist or not to confirm image product was deleted 
-            if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
-            $product->delete();
+            DB::transaction(function () use ($id_product) {
+                // find product
+                $product = Product::find($id_product);
+                if(!$product) throw new Error( "Not found product this product",404);
+                //get name img product
+                $img_access = basename($product->url_img);
+                Storage::delete("public/product_img/".$img_access);
+                // check exist or not to confirm image product was deleted 
+                if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
+                $listCategory = DB::table('category_product_detail')->where('product_id',$id_product)->get();
+                foreach($listCategory as $category){
+                    $categoryProductDetail = new CategoryProductController();
+                    $result = $categoryProductDetail->delete_category_product($product->id,$category->category_id);
+                    if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
+                }
+                DB::table('combo_product_detail')->where('product_id',$id_product)->delete();
+                DB::table('order_product_detail')->where('product_id',$id_product)->delete();
+                $product->delete();
+                
+            });
             return response()->json(["message"=>"delete successfully"],200);
         } catch (\Throwable $th) {
-             return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
+            return Response()->json(["Error"=>$th->getMessage()],500);
         } 
     }
 }

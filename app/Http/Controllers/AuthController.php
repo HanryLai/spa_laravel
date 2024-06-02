@@ -58,8 +58,7 @@ return response()->json([
     public function logout(Request $request)
     {
         try{
-            $authrization = $request->header('Authorization');
-            $token_input = explode(" ",$authrization)[1];
+            $token_input = $request->cookie('access_token');
             $user = User::where('access_token',$token_input)->first();
             if($user === null){
                 return response()->json([

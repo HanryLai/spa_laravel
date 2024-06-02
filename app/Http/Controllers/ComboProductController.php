@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ComboProduct;
 use App\Models\ComboProductDetail;
+use App\Models\Voucher;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,19 @@ use Illuminate\Support\Facades\Storage;
 
 class ComboProductController extends Controller
 {
+
+    public function getVoucherById(string $id){
+        try{
+            $voucher = Voucher::find($id);
+            if(!$voucher){
+                throw new Error("cannot found this voucher");
+            }
+            return response()->json(["message"=>"voucher by id ".$id,"data"=>$voucher],200);
+        }
+        catch(\Exception $e){
+          return response()->json(["error"=>"voucher by id ".$id,"data"=>$e->getMessage()],500);
+        }
+    }
 
     // input list_product container array id product and
     //  list quantity container int quantity of product
@@ -32,6 +46,7 @@ class ComboProductController extends Controller
             $combo_product->url_img = $access_url_img;
             $combo_product->description = $data['description'];
             $combo_product->price = $data['price'];
+            $combo_product->quantity = $data['quantity'];
             $combo_product->save();
 
             if(!$request->has('list_product')){
@@ -128,6 +143,7 @@ class ComboProductController extends Controller
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'price' => $data['price'],
+                'quantity'=>$data['quantity'],
                 'url_img'=>$path_access,
             ]);
             // delete full combo_product_detail old
@@ -187,20 +203,24 @@ class ComboProductController extends Controller
         }
     }
 
-    // public function deleteComboProductById(String $id_product){
-    //     try {
-    //         // find product
-    //         $combo_product = ComboProduct::find($id_product);
-    //         if(!$combo_product) throw new Error( "Not found product this product",404);
-    //         //get name img product
-    //         $img_access = basename($combo_product->url_img);
-    //         Storage::delete("public/product_img/".$img_access);
-    //         // check exist or not to confirm image product was deleted 
-    //         if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
-    //         $combo_product->delete();
-    //         return response()->json(["message"=>"delete successfully"],200);
-    //     } catch (\Throwable $th) {
-    //          return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
-    //     } 
-    // }
+    public function deleteComboProductById(String $id_product){
+        try {
+            // find product
+            $combo_product = ComboProduct::find($id_product);
+            if(!$combo_product) throw new Error( "Not found product this product",404);
+            //get name img product
+            $img_access = basename($combo_product->url_img);
+            Storage::delete("public/product_img/".$img_access);
+            // check exist or not to confirm image product was deleted 
+            if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
+            
+            DB::table("combo_product_detail")->where("combo_product_id",$id_product)->delete();
+            DB::table("category_combo_product_detail")->where("combo_product_id",$id_product)->delete();
+            DB::table('order_combo_product_detail')->where('combo_product_id',$id_product)->delete();
+            $combo_product->delete();
+            return response()->json(["message"=>"delete successfully"],200);
+        } catch (\Throwable $th) {
+             return Response()->json(["Error"=>$th->getMessage()],$th->getCode());
+        } 
+    }
 }

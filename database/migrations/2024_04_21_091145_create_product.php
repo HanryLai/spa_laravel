@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('url_img',100);
             $table->longText('description');
             $table->double('price');
+            $table->integer('quantity');
             $table->timestamps();
         });
     }

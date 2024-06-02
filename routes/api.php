@@ -9,12 +9,11 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\Statistical;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Middleware\CheckToken;
-use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsAdmin;
-use App\Http\Middleware\IsStaff;
 use App\Http\Middleware\IsStaffAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +22,7 @@ Route::prefix('auth')->group(function(){
     Route::post('login',[AuthController::class,"login"]);
 
     //logout
-    Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class)  ;
+    Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class);
 });
 // 
 Route::prefix('user')->middleware(IsAdmin::class)->group(function(){
@@ -85,6 +84,9 @@ Route::prefix('product')->group(function(){
     // find combo product container product 
     Route::get('{id}/combo-product',[ProductController::class,'findComboProductByProductID']);
 
+    // get category by product id
+    Route::get('category/{product_id}',[ProductController::class,'findCategoryByProductId']);
+    
     //find all
     Route::get('', [ProductController::class,'getAll']);
 
@@ -118,22 +120,27 @@ Route::prefix('combo-product')->group(function(){
 
 Route::prefix('voucher')->group(function(){
 
+    //find all
+    Route::get("all",[VoucherController::class,'findAllVoucher']);
+
+    //find by id
+    Route::get('{id}', [ComboProductController::class,'getVoucherById']);
+
     //find voucher available
     Route::get("available",[VoucherController::class,'findAllAvailable']);
 
      //find voucher unavailable
     Route::get("unavailable",[VoucherController::class,'findAllUnavailable']);
 
-    //find all
-    Route::get("all",[VoucherController::class,'findAllVoucher']);
-
+    
     //update voucher by id
     Route::post('update/{id}',[VoucherController::class,'updateVoucherById'])->middleware(IsStaffAdmin::class);
 
     //create new voucher
     Route::post('',[VoucherController::class,'create_voucher'])->middleware(IsStaffAdmin::class);
 
-
+    //delete voucher by id
+    Route::delete('{id}',[VoucherController::class,'deleteVoucherById'])->middleware(IsStaffAdmin::class);
 });
 
 Route::prefix('blog')->group(function(){
@@ -149,6 +156,9 @@ Route::prefix('blog')->group(function(){
 
     //update blog
     Route::post('{id}/update',[BlogController::class,'updateBlog'])->middleware(IsStaffAdmin::class);
+
+    //delete blog
+    Route::delete('{id}',[BlogController::class,'deleteBlog'])->middleware(IsStaffAdmin::class);
     
 });
 
@@ -162,6 +172,9 @@ Route::prefix('category')->group(function(){
     //update category
     Route::patch('{id}',[CategoryController::class,'update_category'])->middleware(IsStaffAdmin::class);
 
+    // delete category
+    Route::delete('{id}',[CategoryController::class,'delete_category'])->middleware(IsStaffAdmin::class);
+
 });
 
 Route::prefix('order')->group(function(){
@@ -171,4 +184,22 @@ Route::prefix('order')->group(function(){
     Route::post('',[OrderController::class,'createOrder']);
     //update status order
     Route::patch('{id}/update-status',[OrderController::class,'updateStatus'])->middleware(IsStaffAdmin::class);
+});
+
+Route::prefix('dashboard')->group(function(){
+    //get total product
+    Route::get("total-product-in-stock",[Statistical::class,"totalProductInStock"]);
+
+    //get products in stock
+    Route::get("products-in-stock",[Statistical::class,"productInStock"]);
+    
+    // product-almost-out-of-stock
+    Route::get("product-almost-out-of-stock",[Statistical::class,"almostOutOfStock"]);
+
+    // product-out-of-stock
+    Route::get("product-out-of-stock",[Statistical::class,"outOfStock"]);
+
+    //get product out of stock
+
+
 });

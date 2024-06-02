@@ -40,7 +40,7 @@ class BlogController extends Controller
         try {
             $data = $request->all();
             $access_img = asset('storage/'.env('DEFAULT_IMAGE ','default.png'));
-            if($request->has('image') && $request->file('image') != null){
+            if($request->hasFile('image') && $request->fileFile('image') != null){
                 $path = $request->file('image')->store('blog_img','public');
                 $access_img = asset('storage/'.$path);
             }
@@ -123,7 +123,7 @@ class BlogController extends Controller
             if(!$blog) throw new Error("Not found this blog",404);
             
             //check request have img 
-            $requestIsImg = $request->has('image');
+            $requestIsImg = $request->hasFile('image');
 
             //check request img default
             $requestIsDefaultImg = basename($request->file('image')) == env('DEFAULT_IMAGE ','default.png');
@@ -160,6 +160,28 @@ class BlogController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(['Error'=>$th->getMessage()],500);
+        }
+    }
+
+    public function deleteBlog (string $blog_id){
+        try {
+            DB::beginTransaction();
+            $blog = Blog::find($blog_id);
+            if(!$blog) throw new Error("Not found this blog",404);
+            $vouchers = DB::table('voucher_blog')->where('blog_id',$blog_id)->get();
+            foreach($vouchers as $voucher){
+                $controller = new VoucherBlogController();
+                $result = $controller->deteleVoucher_blog($voucher->voucher_id,$blog_id);
+                if($result instanceof \Throwable){
+                    throw $result;
+                }
+            }
+            $blog->delete();
+            DB::commit();
+            return response()->json(["message"=>"delete blog success"],200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json(["Error"=>$th->getMessage()],$th->getCode());
         }
     }
 }

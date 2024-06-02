@@ -62,4 +62,23 @@ class CategoryController extends Controller
             return response()->json(["error"=>$e->getMessage()],500);
         }
     }
+
+    //delete category
+    public function delete_category($id){
+        DB::beginTransaction();
+        try{
+            $category = Category::find($id);
+            if($category == null){
+                return response()->json(["message"=>"Not exist this category"],404);
+            }
+            $category_product = DB::table("category_product_detail")->where("category_id",$id)->delete();
+            
+            $category->delete();
+            DB::commit();
+            return response()->json(["message"=>"Delete success"],200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json(["error"=>$e->getMessage()],500);
+        }
+    }
 }
