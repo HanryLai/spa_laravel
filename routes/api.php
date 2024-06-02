@@ -23,9 +23,14 @@ Route::prefix('auth')->group(function(){
 
     //logout
     Route::post('logout',[AuthController::class,"logout"])->middleware(CheckToken::class);
+    
 });
 // 
 Route::prefix('user')->middleware(IsAdmin::class)->group(function(){
+
+    //find by email
+    Route::get('email/{email}',[UserController::class,"email"]);
+
     //get all user account 
     Route::get('',[UserController::class,"index"]);
 
@@ -78,6 +83,8 @@ Route::prefix('staff')->middleware(IsAdmin::class)->group(function(){
 });
 
 Route::prefix('product')->group(function(){
+    Route::get('search-name',[ProductController::class,'searchProductName']);
+
     //find by id
     Route::get('{id}', [ProductController::class,'findProductById']);
 

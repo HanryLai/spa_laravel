@@ -56,6 +56,13 @@ class ProductController extends Controller
         }
     }
 
+    public function searchProductName(Request $request){
+        $name = $request->input('name');
+        $result = Product::where('name','like',"%$name%")->get();
+        if(!$result) return response()->json(["message"=>"Not found product by name ".$name],404);
+        return response()->json(["message"=>"product by name ".$name,"data"=>$result],200);
+    }
+
     public function findProductById(String $id_product){
         try {
             $product = Product::find($id_product);

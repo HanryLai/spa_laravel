@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+
+    public function email(String $email){
+      $result = User::where('email','like',"%$email%")->get();
+      if(!$result) throw new Error("Not exist any user",404);
+      return response()->json(["Message"=>"List users","data"=>$result],200);
+    }
     /**
      * Display a listing of the resource.
      */
