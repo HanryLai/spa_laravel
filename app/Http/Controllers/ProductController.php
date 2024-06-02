@@ -63,6 +63,14 @@ class ProductController extends Controller
         return response()->json(["message"=>"product by name ".$name,"data"=>$result],200);
     }
 
+    public function splitPage(int $page){
+        $limit = 5  ;
+        $offset = ($page-1)*$limit;
+        $result = Product::offset($offset)->limit($limit)->get();
+        if(!$result) return response()->json(["message"=>"Not found product by page ".$page],404);
+        return response()->json(["message"=>"product by page ".$page,"data"=>$result],200);
+    }
+
     public function findProductById(String $id_product){
         try {
             $product = Product::find($id_product);
@@ -194,7 +202,34 @@ class ProductController extends Controller
             });
             return response()->json(["message"=>"delete successfully"],200);
         } catch (\Throwable $th) {
-            return Response()->json(["Error"=>$th->getMessage()],500);
-        } 
+            return response()->json(["error"=>$th->getMessage()],500);
+        }
     }
+
+    public function deleteArrayProductId(Request $request){
+        $product_id = $request->input('product_id');
+        foreach($product_id as $id_product){
+            DB::transaction(function () use ($id_product) {
+                // find product
+                $product = Product::find($id_product);
+                if(!$product) throw new Error( "Not found product this product",404);
+                //get name img product
+                $img_access = basename($product->url_img);
+                Storage::delete("public/product_img/".$img_access);
+                // check exist or not to confirm image product was deleted 
+                if(Storage::exists("public/product_img/".$img_access)) throw new Error("Delete image product faild",500);
+                $listCategory = DB::table('category_product_detail')->where('product_id',$id_product)->get();
+                foreach($listCategory as $category){
+                    $categoryProductDetail = new CategoryProductController();
+                    $result = $categoryProductDetail->delete_category_product($product->id,$category->category_id);
+                    if($result instanceof \Throwable) throw new Error($result->getMessage(),500);
+                }
+                DB::table('combo_product_detail')->where('product_id',$id_product)->delete();
+                DB::table('order_product_detail')->where('product_id',$id_product)->delete();
+                $product->delete();
+                
+            });
+        }
+        return response()->json(["message"=>"delete successfully"],200);
+}
 }

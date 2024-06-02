@@ -83,6 +83,8 @@ Route::prefix('staff')->middleware(IsAdmin::class)->group(function(){
 });
 
 Route::prefix('product')->group(function(){
+    Route::get("split-page/{page}",[ProductController::class,'splitPage']);
+
     Route::get('search-name',[ProductController::class,'searchProductName']);
 
     //find by id
@@ -105,6 +107,9 @@ Route::prefix('product')->group(function(){
 
     //delete product by id
     Route::delete("{id}",[ProductController::class,"deleteProductById"])->middleware(IsStaffAdmin::class);   
+
+    //delete product by array id
+    Route::delete("",[ProductController::class,"deleteArrayProductId"])->middleware(IsStaffAdmin::class);
 });
 
 Route::prefix('combo-product')->group(function(){
