@@ -43,7 +43,7 @@ Route::prefix('user')->middleware(IsAdmin::class)->group(function(){
     // update user
     Route::patch("{id}/update",[UserController::class,"update"]);
 });
-
+//
 Route::prefix('customer')->middleware(IsStaffAdmin::class)->group(function(){
     // get all customer
     Route::get('',[CustomerController::class,"index"]);
@@ -55,7 +55,7 @@ Route::prefix('customer')->middleware(IsStaffAdmin::class)->group(function(){
     //update accumulated point
     Route::patch("{customer_id}/update_point",[CustomerController::class,"update_accumulated_point"]);
 });
-
+//
 Route::prefix('admin')->middleware(IsAdmin::class)->group(function(){
     //get all admin
     Route::get('',[AdminController::class,"index"]);
@@ -68,7 +68,7 @@ Route::prefix('admin')->middleware(IsAdmin::class)->group(function(){
     //update accumulated point
     Route::patch("{admin_id}/update_point",[AdminController::class,"update_accumulated_point"]);
 });
-
+//
 Route::prefix('staff')->middleware(IsAdmin::class)->group(function(){
     //get all staff
     Route::get('',[StaffController::class,"index"]);
@@ -81,7 +81,7 @@ Route::prefix('staff')->middleware(IsAdmin::class)->group(function(){
     //update accumulated point
     Route::patch("{staff_id}/update_point",[StaffController::class,"update_accumulated_point"]);
 });
-
+//
 Route::prefix('product')->group(function(){
     Route::get("split-page/{page}",[ProductController::class,'splitPage']);
 
@@ -111,7 +111,7 @@ Route::prefix('product')->group(function(){
     //delete product by array id
     Route::delete("",[ProductController::class,"deleteArrayProductId"])->middleware(IsStaffAdmin::class);
 });
-
+//
 Route::prefix('combo-product')->group(function(){
     //find by id
     Route::get('{id}', [ComboProductController::class,'findComboProductById']);
@@ -129,8 +129,11 @@ Route::prefix('combo-product')->group(function(){
     //delete product by id
     Route::delete("{id}",[ComboProductController::class,"deleteComboProductById"])->middleware(IsStaffAdmin::class);  
 });
-
+//
 Route::prefix('voucher')->group(function(){
+    Route::get("split-page/{page}",[VoucherController::class,'splitPage']);
+
+    Route::get('search-name',[VoucherController::class,'searchVoucherName']);
 
     //find all
     Route::get("all",[VoucherController::class,'findAllVoucher']);
@@ -153,8 +156,11 @@ Route::prefix('voucher')->group(function(){
 
     //delete voucher by id
     Route::delete('{id}',[VoucherController::class,'deleteVoucherById'])->middleware(IsStaffAdmin::class);
-});
 
+    Route::delete("",[VoucherController::class,"deleteArrayVoucherId"])->middleware(IsStaffAdmin::class);
+
+});
+//
 Route::prefix('blog')->group(function(){
     
     //get by id
@@ -173,7 +179,7 @@ Route::prefix('blog')->group(function(){
     Route::delete('{id}',[BlogController::class,'deleteBlog'])->middleware(IsStaffAdmin::class);
     
 });
-
+//
 Route::prefix('category')->group(function(){
     // get by id
     Route::get('{id}',[CategoryController::class,'get_by_id']);
@@ -188,7 +194,7 @@ Route::prefix('category')->group(function(){
     Route::delete('{id}',[CategoryController::class,'delete_category'])->middleware(IsStaffAdmin::class);
 
 });
-
+//
 Route::prefix('order')->group(function(){
     //get by id
     Route::get('{id}',[OrderController::class,'findOrderById']);
@@ -197,7 +203,7 @@ Route::prefix('order')->group(function(){
     //update status order
     Route::patch('{id}/update-status',[OrderController::class,'updateStatus'])->middleware(IsStaffAdmin::class);
 });
-
+//
 Route::prefix('dashboard')->group(function(){
     //get total product
     Route::get("total-product-in-stock",[Statistical::class,"totalProductInStock"]);
@@ -212,6 +218,5 @@ Route::prefix('dashboard')->group(function(){
     Route::get("product-out-of-stock",[Statistical::class,"outOfStock"]);
 
     //get product out of stock
-
-
+    
 });

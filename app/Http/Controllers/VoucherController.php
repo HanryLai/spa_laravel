@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class VoucherController extends Controller
 {
+
     public function create_voucher(Request $request){
         try {
             DB::beginTransaction();
@@ -49,6 +50,23 @@ class VoucherController extends Controller
            return response()->json(["message"=>"create new voucher ",
             "Error"=>$th->getMessage()],500);
         }
+    }
+
+    public function splitPage(int $index){
+        $limit = 5;
+        $offset = ($index-1)*$limit;
+        $result = Voucher::offset($offset)->limit($limit)->get();
+        if($result) return response()->json(["message"=>"split page","data"=>$result],200);
+        else return response()->json(["message"=>"not found"],404);
+    }
+
+    public function searchVoucherName(Request $request){
+        $name = $request->name;
+        // echo($name);
+        $result = Voucher::where('name','like','%'.$name.'%')->get();
+        // dd($result);
+        if($result) return response()->json(["message"=>"search voucher name","data"=>$result],200);
+        else return response()->json(["message"=>"not found"],404);
     }
 
     public function findVoucherById(String $id_voucher){
@@ -167,4 +185,26 @@ class VoucherController extends Controller
             } 
         }
     
+    public function deleteArrayVoucherId(Request $request){
+        try {
+            DB::transaction(function () use ($request) {
+                $data = $request['list_voucher'];
+                foreach ($data as $voucher_id) {
+                    $voucher = Voucher::find($voucher_id);
+                    if(!$voucher) throw new Error( "Not found this voucher",404);
+                    $img_access = basename($voucher->url_img);
+                    Storage::delete("public/voucher_img/".$img_access);
+                    if(Storage::exists("public/voucher_img/".$img_access)) throw new Error("Delete image voucher faild",500);
+                    $voucher_blog= DB::table('voucher_blog')->where('voucher_id',$voucher_id)
+                    ->update([
+                        'voucher_id'=> $voucher_id,
+                    ]);
+                    $voucher->delete();
+                }
+            });
+            return response()->json(["message"=>"delete successfully"],200);
+        } catch (\Throwable $th) {
+            return Response()->json(["Error"=>$th->getMessage()],500);
+        } 
+    }
 }
